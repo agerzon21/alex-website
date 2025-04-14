@@ -111,7 +111,7 @@ const Navbar = () => {
       <Container maxW="container.xl" h="100%">
         <Flex justify="center" align="center" position="relative" h="100%">
           {/* Left Navigation */}
-          <Flex position="absolute" left="34%" h="100%" align="center">
+          <Flex position="absolute" left="32%" h="100%" align="center">
             {leftNavItems.map((label, index) => (
               <Flex key={label} align="center" role="group">
                 <NavLink label={label} />
@@ -154,7 +154,7 @@ const Navbar = () => {
           </MotionBox>
 
           {/* Right Navigation */}
-          <Flex position="absolute" right="32%" h="100%" align="center">
+          <Flex position="absolute" right="30%" h="100%" align="center">
             {rightNavItems.map((label, index) => (
               <Flex key={label} align="center" role="group">
                 <NavLink label={label} isRightSide />
