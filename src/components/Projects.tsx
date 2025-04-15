@@ -1,4 +1,4 @@
-import { Box, Container, SimpleGrid, Heading, Image, Link, Text, useColorModeValue, VStack, Icon, Tooltip } from '@chakra-ui/react';
+import { Box, Container, SimpleGrid, Heading, Image, Link, Text, useColorModeValue, VStack, Icon, Tooltip, Skeleton } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaLock } from 'react-icons/fa';
 import ProjectModal from './ProjectModal';
@@ -64,6 +64,8 @@ const projects: Project[] = [
 const CarouselPreview = ({ project }: { project: Project }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!isPaused) {
@@ -74,6 +76,17 @@ const CarouselPreview = ({ project }: { project: Project }) => {
       return () => clearInterval(timer);
     }
   }, [isPaused, project.images.length]);
+
+  const handleImageLoad = (src: string) => {
+    setLoadedImages(prev => {
+      const newSet = new Set(prev);
+      newSet.add(src);
+      return newSet;
+    });
+    if (loadedImages.size === project.images.length - 1) {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Box
@@ -96,17 +109,35 @@ const CarouselPreview = ({ project }: { project: Project }) => {
           top={0}
           left={0}
           initial={{ opacity: 0 }}
-          animate={{ opacity: index === currentImageIndex ? 1 : 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          animate={{ 
+            opacity: index === currentImageIndex ? 1 : 0,
+            zIndex: index === currentImageIndex ? 1 : 0
+          }}
+          transition={{ 
+            duration: 0.8,
+            ease: "easeInOut",
+            opacity: { duration: 0.5 }
+          }}
+          onLoad={() => handleImageLoad(image)}
+          loading={index === 0 ? "eager" : "lazy"}
         />
       ))}
+      {isLoading && (
+        <Skeleton
+          position="absolute"
+          top={0}
+          left={0}
+          w="100%"
+          h="100%"
+        />
+      )}
       <Box
         position="absolute"
         top={0}
         left={0}
         right={0}
         bottom={0}
-        bg="linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3))"
+        bg="linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.15))"
       />
     </Box>
   );
@@ -227,7 +258,7 @@ const StaticPreview = ({ project }: { project: Project }) => {
         left={0}
         right={0}
         bottom={0}
-        bg="linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%)"
+        bg="linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.2))"
       />
     </Box>
   );

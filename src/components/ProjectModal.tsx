@@ -154,67 +154,112 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
             </VStack>
 
             <VStack spacing={4} align="stretch">
-              <Image
-                src={project.title === 'Vero Photography' 
-                  ? '/projects/veronica-photography/optimized/screenshot-main.png'
-                  : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-main.png`}
-                alt={`${project.title} screenshot`}
-                borderRadius="lg"
-                fallback={
-                  <Box
-                    w="100%"
-                    h="300px"
-                    bg="gray.100"
-                    borderRadius="lg"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Text color="gray.500">Loading image...</Text>
-                  </Box>
-                }
-              />
+              <Box position="relative" h="300px" borderRadius="lg" overflow="hidden">
+                <Image
+                  src={project.title === 'Vero Photography' 
+                    ? '/projects/veronica-photography/optimized/screenshot-main.png'
+                    : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-main.png`}
+                  alt={`${project.title} screenshot`}
+                  objectFit="cover"
+                  w="100%"
+                  h="100%"
+                  loading="eager"
+                  transition="all 0.3s ease-in-out"
+                  style={{
+                    filter: 'blur(0px)',
+                  }}
+                  _loading={{
+                    opacity: 0.7,
+                    style: {
+                      filter: 'blur(10px)',
+                    }
+                  }}
+                  fallback={
+                    <Box
+                      w="100%"
+                      h="300px"
+                      bg="gray.100"
+                      borderRadius="lg"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <Text color="gray.500">Loading image...</Text>
+                    </Box>
+                  }
+                />
+              </Box>
               <SimpleGrid columns={2} spacing={4}>
-                <Image
-                  src={project.title === 'Vero Photography'
-                    ? '/projects/veronica-photography/optimized/screenshot-1.png'
-                    : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-1.png`}
-                  alt={`${project.title} screenshot 1`}
-                  borderRadius="lg"
-                  fallback={
-                    <Box
-                      w="100%"
-                      h="150px"
-                      bg="gray.100"
-                      borderRadius="lg"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Text color="gray.500">Loading image...</Text>
-                    </Box>
-                  }
-                />
-                <Image
-                  src={project.title === 'Vero Photography'
-                    ? '/projects/veronica-photography/optimized/screenshot-2.png'
-                    : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-2.png`}
-                  alt={`${project.title} screenshot 2`}
-                  borderRadius="lg"
-                  fallback={
-                    <Box
-                      w="100%"
-                      h="150px"
-                      bg="gray.100"
-                      borderRadius="lg"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Text color="gray.500">Loading image...</Text>
-                    </Box>
-                  }
-                />
+                <Box position="relative" h="150px" borderRadius="lg" overflow="hidden">
+                  <Image
+                    src={project.title === 'Vero Photography'
+                      ? '/projects/veronica-photography/optimized/screenshot-1.png'
+                      : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-1.png`}
+                    alt={`${project.title} screenshot 1`}
+                    objectFit="cover"
+                    w="100%"
+                    h="100%"
+                    loading="lazy"
+                    transition="all 0.3s ease-in-out"
+                    style={{
+                      filter: 'blur(0px)',
+                    }}
+                    _loading={{
+                      opacity: 0.7,
+                      style: {
+                        filter: 'blur(10px)',
+                      }
+                    }}
+                    fallback={
+                      <Box
+                        w="100%"
+                        h="150px"
+                        bg="gray.100"
+                        borderRadius="lg"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Text color="gray.500">Loading image...</Text>
+                      </Box>
+                    }
+                  />
+                </Box>
+                <Box position="relative" h="150px" borderRadius="lg" overflow="hidden">
+                  <Image
+                    src={project.title === 'Vero Photography'
+                      ? '/projects/veronica-photography/optimized/screenshot-2.png'
+                      : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-2.png`}
+                    alt={`${project.title} screenshot 2`}
+                    objectFit="cover"
+                    w="100%"
+                    h="100%"
+                    loading="lazy"
+                    transition="all 0.3s ease-in-out"
+                    style={{
+                      filter: 'blur(0px)',
+                    }}
+                    _loading={{
+                      opacity: 0.7,
+                      style: {
+                        filter: 'blur(10px)',
+                      }
+                    }}
+                    fallback={
+                      <Box
+                        w="100%"
+                        h="150px"
+                        bg="gray.100"
+                        borderRadius="lg"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Text color="gray.500">Loading image...</Text>
+                      </Box>
+                    }
+                  />
+                </Box>
               </SimpleGrid>
               <Button
                 as={Link}
