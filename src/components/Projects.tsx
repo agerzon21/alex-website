@@ -31,11 +31,11 @@ const projects: Project[] = [
     github: 'https://github.com/agerzon21/veronica-website',
     live: 'https://vero.photography',
     images: [
-      '/projects/veronica-photography/main.png',
-      '/projects/veronica-photography/1.png',
-      '/projects/veronica-photography/2.png',
-      '/projects/veronica-photography/3.png',
-      '/projects/veronica-photography/4.png'
+      '/projects/veronica-photography/optimized/main.png',
+      '/projects/veronica-photography/optimized/1.png',
+      '/projects/veronica-photography/optimized/2.png',
+      '/projects/veronica-photography/optimized/3.png',
+      '/projects/veronica-photography/optimized/4.png'
     ],
     hasCarousel: true,
     isPrivate: false,
@@ -50,7 +50,7 @@ const projects: Project[] = [
     description: 'Co-led development of the world\'s first altruism cryptocurrency platform, utilizing blockchain technology to support decentralized fundraising initiatives. Managed cloud infrastructure to ensure scalability and security.',
     tech: ['React', 'TypeScript', 'Chakra UI', 'Blockchain', 'Cloud Infrastructure'],
     live: 'https://grumpyshib.com',
-    images: ['/projects/grumpyshib/main.png'],
+    images: ['/projects/grumpyshib/optimized/main.png'],
     hasCarousel: false,
     isPrivate: true,
     stats: {

@@ -48,7 +48,7 @@ const Hero = () => {
               >
                 <Box
                   as="img"
-                  src="/profile.jpeg"
+                  src="/images/optimized/profile.jpeg"
                   alt="Profile Picture"
                   w="100%"
                   h="100%"

@@ -156,8 +156,8 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
             <VStack spacing={4} align="stretch">
               <Image
                 src={project.title === 'Vero Photography' 
-                  ? '/projects/veronica-photography/screenshot-main.png'
-                  : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/screenshot-main.png`}
+                  ? '/projects/veronica-photography/optimized/screenshot-main.png'
+                  : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-main.png`}
                 alt={`${project.title} screenshot`}
                 borderRadius="lg"
                 fallback={
@@ -177,8 +177,8 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
               <SimpleGrid columns={2} spacing={4}>
                 <Image
                   src={project.title === 'Vero Photography'
-                    ? '/projects/veronica-photography/screenshot-1.png'
-                    : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/screenshot-1.png`}
+                    ? '/projects/veronica-photography/optimized/screenshot-1.png'
+                    : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-1.png`}
                   alt={`${project.title} screenshot 1`}
                   borderRadius="lg"
                   fallback={
@@ -197,8 +197,8 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
                 />
                 <Image
                   src={project.title === 'Vero Photography'
-                    ? '/projects/veronica-photography/screenshot-2.png'
-                    : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/screenshot-2.png`}
+                    ? '/projects/veronica-photography/optimized/screenshot-2.png'
+                    : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-2.png`}
                   alt={`${project.title} screenshot 2`}
                   borderRadius="lg"
                   fallback={
