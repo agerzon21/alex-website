@@ -15,10 +15,10 @@ const Navbar = () => {
   );
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const textColor = useColorModeValue('gray.700', 'gray.300');
-  const hoverColor = useColorModeValue('blue.500', 'blue.300');
+  const hoverColor = useColorModeValue('#3182CE', '#63B3ED');
 
   useEffect(() => {
-    const unsubscribe = scrollY.onChange((y: number) => {
+    const unsubscribe = scrollY.on('change', (y: number) => {
       setIsScrolled(y > 20);
     });
     return () => unsubscribe();
