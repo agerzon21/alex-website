@@ -1,10 +1,11 @@
-import { Box, Container, Heading, Text, VStack, SimpleGrid, Icon, Link, useColorModeValue, Tooltip, Image, HStack } from '@chakra-ui/react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Box, Container, Flex, SimpleGrid, Heading, Image, Link, Text, useColorModeValue, VStack, Icon, Tooltip } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaLock } from 'react-icons/fa';
-import { useState, useEffect } from 'react';
 import ProjectModal from './ProjectModal';
+import { useState, useEffect } from 'react';
 
 const MotionBox = motion(Box);
+const MotionFlex = motion(Flex);
 const MotionImage = motion(Image);
 
 interface Project {
@@ -14,21 +15,16 @@ interface Project {
   github?: string;
   live: string;
   images: string[];
-  isPrivate: boolean;
   hasCarousel?: boolean;
-  stats: {
-    performance: string;
-    features: string[];
-    impact: string;
+  isPrivate?: boolean;
+  stats?: {
+    performance?: string;
+    features?: string[];
+    impact?: string;
   };
 }
 
-interface ProjectPreviewProps {
-  project: Project;
-  onClick: () => void;
-}
-
-const projects = [
+const projects: Project[] = [
   {
     title: 'Vero Photography',
     description: 'A professional photography portfolio website showcasing stunning visual work',
@@ -66,7 +62,7 @@ const projects = [
   }
 ];
 
-const CarouselPreview = ({ project, onClick }: ProjectPreviewProps) => {
+const CarouselPreview = ({ project, onClick }: { project: Project; onClick: () => void }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -117,7 +113,7 @@ const CarouselPreview = ({ project, onClick }: ProjectPreviewProps) => {
   );
 };
 
-const StaticPreview = ({ project, onClick }: ProjectPreviewProps) => {
+const StaticPreview = ({ project, onClick }: { project: Project; onClick: () => void }) => {
   return (
     <Box
       h="200px"
@@ -238,7 +234,7 @@ const StaticPreview = ({ project, onClick }: ProjectPreviewProps) => {
   );
 };
 
-const ProjectPreview = (props: ProjectPreviewProps) => {
+const ProjectPreview = (props: { project: Project; onClick: () => void }) => {
   return props.project.hasCarousel ? (
     <CarouselPreview {...props} />
   ) : (

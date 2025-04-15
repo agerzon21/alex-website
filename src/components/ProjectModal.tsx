@@ -3,27 +3,24 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Box,
+  Button,
   Text,
-  SimpleGrid,
   Image,
+  Box,
+  Link,
   VStack,
   HStack,
-  Icon,
-  Link,
   useColorModeValue,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
+  SimpleGrid,
+  Icon,
   Badge,
-  Divider,
-  Button
+  Divider
 } from '@chakra-ui/react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaGithub, FaExternalLinkAlt, FaLock, FaChartLine, FaRocket, FaShieldAlt } from 'react-icons/fa';
+import { FaGithub, FaExternalLinkAlt, FaLock, FaRocket, FaShieldAlt, FaChartLine } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const MotionBox = motion(Box);
 

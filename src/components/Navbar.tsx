@@ -1,15 +1,9 @@
-import { Box, Container, Flex, useColorModeValue, HStack, Link, Image, Text } from '@chakra-ui/react';
-import { keyframes } from '@emotion/react';
+import { Box, Container, Flex, useColorModeValue, Link, Image, Text } from '@chakra-ui/react';
 import { motion, useScroll } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 const MotionBox = motion(Box);
 const MotionText = motion(Text);
-
-const underlineAnimation = keyframes`
-  0% { transform: scaleX(0); }
-  100% { transform: scaleX(1); }
-`;
 
 const Navbar = () => {
   const { scrollY } = useScroll();
@@ -24,7 +18,7 @@ const Navbar = () => {
   const hoverColor = useColorModeValue('blue.500', 'blue.300');
 
   useEffect(() => {
-    const unsubscribe = scrollY.onChange(y => {
+    const unsubscribe = scrollY.onChange((y: number) => {
       setIsScrolled(y > 20);
     });
     return () => unsubscribe();
@@ -40,7 +34,7 @@ const Navbar = () => {
   const leftNavItems = ['About', 'Skills'];
   const rightNavItems = ['Projects', 'Contact'];
 
-  const NavLink = ({ label, isRightSide = false }: { label: string; isRightSide?: boolean }) => (
+  const NavLink = ({ label }: { label: string }) => (
     <Box
       position="relative"
       cursor="pointer"
@@ -71,8 +65,7 @@ const Navbar = () => {
           _before={{
             content: '""',
             position: "absolute",
-            left: isRightSide ? "unset" : 0,
-            right: isRightSide ? 0 : "unset",
+            left: 0,
             bottom: 0,
             height: "100%",
             width: 0,
@@ -157,7 +150,7 @@ const Navbar = () => {
           <Flex position="absolute" right="30%" h="100%" align="center">
             {rightNavItems.map((label, index) => (
               <Flex key={label} align="center" role="group">
-                <NavLink label={label} isRightSide />
+                <NavLink label={label} />
                 {index < rightNavItems.length - 1 && (
                   <Box
                     h="4"
