@@ -304,16 +304,37 @@ const ProjectPreview = (props: { project: Project }) => {
       display="flex"
       flexDirection="column"
       style={{
-        willChange: 'transform'
+        willChange: 'transform',
+        transformOrigin: 'center center',
+        backfaceVisibility: 'hidden',
+        WebkitBackfaceVisibility: 'hidden'
       }}
     >
-      {project.hasCarousel ? (
-        <CarouselPreview project={project} />
-      ) : (
-        <StaticPreview project={project} />
-      )}
+      <Box
+        overflow="hidden"
+        position="relative"
+        style={{
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden'
+        }}
+      >
+        {project.hasCarousel ? (
+          <CarouselPreview project={project} />
+        ) : (
+          <StaticPreview project={project} />
+        )}
+      </Box>
 
-      <Box p={6} flex="1" display="flex" flexDirection="column">
+      <Box 
+        p={6} 
+        flex="1" 
+        display="flex" 
+        flexDirection="column"
+        bg={bgColor}
+        position="relative"
+        zIndex={1}
+      >
         <Box mb={4}>
           <Heading
             fontSize={{ base: "lg", md: "xl" }}
@@ -359,14 +380,12 @@ const ProjectPreview = (props: { project: Project }) => {
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const cardBg = useColorModeValue('white', 'gray.800');
-  const cardBorder = useColorModeValue('gray.200', 'gray.700');
 
   return (
     <Box 
       id="projects" 
       py={20} 
-      bg="gray.50"
+      bg={useColorModeValue('gray.50', 'gray.900')}
       position="relative"
       zIndex={1}
     >
@@ -394,21 +413,12 @@ const Projects = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                bg={cardBg}
-                borderRadius="lg"
-                overflow="hidden"
-                border="1px"
-                borderColor={cardBorder}
-                _hover={{
-                  transform: 'translateY(-5px)',
-                  boxShadow: '0 4px 24px rgba(0,0,0,0.16)',
-                  borderColor: 'transparent',
-                  cursor: 'pointer',
-                }}
-                style={{
-                  transition: 'all 0.3s'
-                }}
                 onClick={() => setSelectedProject(project)}
+                style={{
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden'
+                }}
               >
                 <ProjectPreview project={project} />
               </MotionBox>

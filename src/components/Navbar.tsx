@@ -11,29 +11,57 @@ const Navbar: React.FC = () => {
   );
 
   useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    const body = document.body;
+    const position = window.pageYOffset;
 
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    if (isMenuOpen) {
+      // Lock scroll
+      body.dataset.scrollPosition = position.toString();
+      body.style.overflow = 'hidden';
+      body.style.position = 'fixed';
+      body.style.top = `-${position}px`;
+      body.style.width = '100%';
+    } else {
+      // Restore scroll
+      body.style.overflow = '';
+      body.style.position = '';
+      body.style.top = '';
+      body.style.width = '';
+      
+      const scrollPosition = body.dataset.scrollPosition;
+      if (scrollPosition) {
+        window.scrollTo({
+          top: Number(scrollPosition),
+          left: 0,
+          behavior: 'auto'
+        });
+        body.dataset.scrollPosition = '';
+      }
+    }
   }, [isMenuOpen]);
 
   const toggleMenu = () => {
+    // Always allow toggling the menu
     setIsMenuOpen(!isMenuOpen);
   };
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
+    
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
       setIsMenuOpen(false);
+      setTimeout(() => {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
     } else if (id === 'hero') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
       setIsMenuOpen(false);
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }, 300);
     }
   };
 
@@ -94,8 +122,12 @@ const Navbar: React.FC = () => {
           <Box 
             as="button"
             onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              if (isMenuOpen) setIsMenuOpen(false);
+              if (!isMobile || !isMenuOpen) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+              if (isMenuOpen) {
+                setIsMenuOpen(false);
+              }
             }}
             _focus={{ outline: 'none' }}
             _active={{ outline: 'none', bg: 'transparent' }}
@@ -106,6 +138,7 @@ const Navbar: React.FC = () => {
           >
             <Image
               src="/images/main-logo.svg"
+              srcSet="/images/main-logo.svg 1x, /images/main-logo.svg 2x"
               alt="Alex Gerzon Logo"
               h="45px"
               w="auto"
@@ -113,6 +146,12 @@ const Navbar: React.FC = () => {
               filter={isMenuOpen ? "brightness(0) invert(1)" : "none"}
               transition="filter 0.3s ease"
               userSelect="none"
+              loading="eager"
+              style={{
+                imageRendering: '-webkit-optimize-contrast',
+                transform: 'translateZ(0)',
+                backfaceVisibility: 'hidden'
+              }}
             />
           </Box>
 
@@ -222,7 +261,9 @@ const Navbar: React.FC = () => {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '20px'
+              padding: '20px',
+              touchAction: 'none',
+              overflowY: 'hidden'
             }}
           >
             {/* Mobile menu items */}
@@ -231,7 +272,15 @@ const Navbar: React.FC = () => {
                 key={item}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + index * 0.1 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ 
+                  delay: 0.2 + index * 0.1,
+                  duration: 0.3
+                }}
+                style={{
+                  position: 'relative',
+                  zIndex: 1000
+                }}
               >
                 <Box
                   color="white"
@@ -240,10 +289,7 @@ const Navbar: React.FC = () => {
                   textAlign="center"
                   cursor="pointer"
                   mb={index < 3 ? 4 : 0}
-                  onClick={() => {
-                    scrollToSection(item.toLowerCase());
-                    setIsMenuOpen(false);
-                  }}
+                  onClick={() => scrollToSection(item.toLowerCase())}
                   _focus={{ outline: 'none' }}
                   _active={{ outline: 'none', bg: 'transparent' }}
                   _hover={{ bg: 'transparent' }}
