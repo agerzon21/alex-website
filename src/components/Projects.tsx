@@ -1,6 +1,5 @@
-import { Box, Container, SimpleGrid, Heading, Image, Link, Text, useColorModeValue, VStack, Icon, Tooltip, Skeleton } from '@chakra-ui/react';
+import { Box, Container, SimpleGrid, Heading, Image, Text, useColorModeValue, VStack, Skeleton, Flex, Tag } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaExternalLinkAlt, FaLock } from 'react-icons/fa';
 import ProjectModal from './ProjectModal';
 import { useState, useEffect } from 'react';
 
@@ -31,11 +30,11 @@ const projects: Project[] = [
     github: 'https://github.com/agerzon21/veronica-website',
     live: 'https://vero.photography',
     images: [
-      '/projects/veronica-photography/optimized/main.png',
-      '/projects/veronica-photography/optimized/1.png',
-      '/projects/veronica-photography/optimized/2.png',
-      '/projects/veronica-photography/optimized/3.png',
-      '/projects/veronica-photography/optimized/4.png'
+      'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730838/main_ruiknu.png',
+      'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730837/2_xazb5x.png',
+      'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730843/1_hjbgwx.png',
+      'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730843/3_cdss5x.png',
+      'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730844/4_dybpxq.png'
     ],
     hasCarousel: true,
     isPrivate: false,
@@ -50,7 +49,9 @@ const projects: Project[] = [
     description: 'Co-led development of the world\'s first altruism cryptocurrency platform, utilizing blockchain technology to support decentralized fundraising initiatives. Managed cloud infrastructure to ensure scalability and security.',
     tech: ['React', 'TypeScript', 'Chakra UI', 'Blockchain', 'Cloud Infrastructure'],
     live: 'https://grumpyshib.com',
-    images: ['/projects/grumpyshib/optimized/main.png'],
+    images: [
+      'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736107/main_qtzsd3.png'
+    ],
     hasCarousel: false,
     isPrivate: true,
     stats: {
@@ -96,6 +97,7 @@ const CarouselPreview = ({ project }: { project: Project }) => {
       overflow="hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      transition="all 0.3s"
     >
       {project.images.map((image, index) => (
         <MotionImage
@@ -120,6 +122,10 @@ const CarouselPreview = ({ project }: { project: Project }) => {
           }}
           onLoad={() => handleImageLoad(image)}
           loading={index === 0 ? "eager" : "lazy"}
+          style={{
+            transform: 'scale(1)',
+            transition: 'transform 0.3s'
+          }}
         />
       ))}
       {isLoading && (
@@ -149,6 +155,7 @@ const StaticPreview = ({ project }: { project: Project }) => {
       h="200px"
       position="relative"
       overflow="hidden"
+      transition="all 0.3s"
     >
       {/* Base image */}
       <Image
@@ -157,6 +164,10 @@ const StaticPreview = ({ project }: { project: Project }) => {
         objectFit="cover"
         w="100%"
         h="100%"
+        style={{
+          transform: 'scale(1)',
+          transition: 'transform 0.3s'
+        }}
       />
       
       {/* Main glitch effect */}
@@ -182,6 +193,10 @@ const StaticPreview = ({ project }: { project: Project }) => {
           repeatDelay: 5,
           times: [0, 0.2, 0.4, 0.6, 1]
         }}
+        style={{
+          transform: 'scale(1)',
+          transition: 'transform 0.3s'
+        }}
       >
         <Image
           src={project.images[0]}
@@ -189,6 +204,10 @@ const StaticPreview = ({ project }: { project: Project }) => {
           objectFit="cover"
           w="100%"
           h="100%"
+          style={{
+            transform: 'scale(1)',
+            transition: 'transform 0.3s'
+          }}
         />
       </MotionBox>
 
@@ -265,10 +284,76 @@ const StaticPreview = ({ project }: { project: Project }) => {
 };
 
 const ProjectPreview = (props: { project: Project }) => {
-  return props.project.hasCarousel ? (
-    <CarouselPreview project={props.project} />
-  ) : (
-    <StaticPreview project={props.project} />
+  const { project } = props;
+  const bgColor = useColorModeValue('white', 'gray.800');
+  const textColor = useColorModeValue('gray.600', 'gray.300');
+
+  return (
+    <MotionBox
+      bg={bgColor}
+      rounded="lg"
+      shadow="md"
+      overflow="hidden"
+      whileHover={{ 
+        y: -5,
+        scale: 1.02
+      }}
+      transition={{ duration: 0.2 }}
+      cursor="pointer"
+      h="100%"
+      display="flex"
+      flexDirection="column"
+      style={{
+        willChange: 'transform'
+      }}
+    >
+      {project.hasCarousel ? (
+        <CarouselPreview project={project} />
+      ) : (
+        <StaticPreview project={project} />
+      )}
+
+      <Box p={6} flex="1" display="flex" flexDirection="column">
+        <Box mb={4}>
+          <Heading
+            fontSize={{ base: "lg", md: "xl" }}
+            mb={2}
+            display="flex"
+            alignItems="center"
+            gap={2}
+          >
+            {project.title}
+          </Heading>
+          <Text
+            fontSize={{ base: "sm", md: "md" }}
+            color={textColor}
+            mb={4}
+            noOfLines={{ base: 2, md: 3 }}
+          >
+            {project.description}
+          </Text>
+        </Box>
+
+        <Flex 
+          wrap="wrap" 
+          gap={2} 
+          mt="auto"
+          mb={2}
+        >
+          {project.tech.map((tech, index) => (
+            <Tag
+              key={index}
+              size="sm"
+              variant="subtle"
+              colorScheme="blue"
+              fontSize={{ base: "xs", md: "sm" }}
+            >
+              {tech}
+            </Tag>
+          ))}
+        </Flex>
+      </Box>
+    </MotionBox>
   );
 };
 
@@ -316,8 +401,9 @@ const Projects = () => {
                 borderColor={cardBorder}
                 _hover={{
                   transform: 'translateY(-5px)',
-                  boxShadow: 'lg',
-                  cursor: 'pointer'
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.16)',
+                  borderColor: 'transparent',
+                  cursor: 'pointer',
                 }}
                 style={{
                   transition: 'all 0.3s'
@@ -325,50 +411,6 @@ const Projects = () => {
                 onClick={() => setSelectedProject(project)}
               >
                 <ProjectPreview project={project} />
-                <Box p={6} position="relative" minH="250px">
-                  <Box position="absolute" bottom={6} left={6} right={6}>
-                    <Box display="flex" flexWrap="wrap" gap={2} mb={4}>
-                      {project.tech.map((tech) => (
-                        <Text
-                          key={tech}
-                          fontSize="sm"
-                          color="blue.500"
-                          bg="blue.50"
-                          px={2}
-                          py={1}
-                          borderRadius="md"
-                        >
-                          {tech}
-                        </Text>
-                      ))}
-                    </Box>
-                    <Box display="flex" gap={4}>
-                      {project.isPrivate ? (
-                        <Tooltip label="Private Repository" placement="top">
-                          <Box display="flex" alignItems="center" gap={2}>
-                            <Icon as={FaLock} w={5} h={5} color="gray.500" />
-                            <Text fontSize="sm" color="gray.500">Private</Text>
-                          </Box>
-                        </Tooltip>
-                      ) : (
-                        <Link href={project.github} isExternal>
-                          <Icon as={FaGithub} w={5} h={5} />
-                        </Link>
-                      )}
-                      <Link href={project.live} isExternal>
-                        <Icon as={FaExternalLinkAlt} w={5} h={5} />
-                      </Link>
-                    </Box>
-                  </Box>
-                  <Box pb="100px">
-                    <Heading size="md" mb={2}>
-                      {project.title}
-                    </Heading>
-                    <Text color="gray.600">
-                      {project.description}
-                    </Text>
-                  </Box>
-                </Box>
               </MotionBox>
             ))}
           </SimpleGrid>

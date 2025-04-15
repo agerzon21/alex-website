@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box } from '@chakra-ui/react'
+import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -11,11 +12,20 @@ const App: React.FC = () => {
   return (
     <Box>
       <Navbar />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Contact />
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Hero />
+            <About />
+            <Skills />
+            <Projects />
+            <Contact />
+          </>
+        } />
+        <Route path="/about" element={<About />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
     </Box>
   )
 }

@@ -48,7 +48,7 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
       <ModalOverlay />
       <ModalContent
         bg={bgColor}
-        borderRadius="xl"
+        borderRadius={{ base: '2xl', md: 'xl' }}
         overflow="hidden"
         as={motion.div}
         initial={{ opacity: 0, scale: 0.9 }}
@@ -56,6 +56,9 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
         exit={{ opacity: 0, scale: 0.9 }}
         position="relative"
         zIndex={1}
+        mx={{ base: 2, md: 0 }}
+        w={{ base: '95vw', md: 'auto' }}
+        minW={0}
       >
         <ModalHeader 
           fontSize="2xl" 
@@ -69,8 +72,19 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
         >
           {project.title}
         </ModalHeader>
-        <ModalCloseButton zIndex={3} />
-        <ModalBody pb={8} position="relative" zIndex={1}>
+        <ModalCloseButton
+          zIndex={3}
+          top={{ base: '16px', md: '20px' }}
+          right={{ base: '16px', md: '24px' }}
+          size={{ base: 'lg', md: 'md' }}
+          w={{ base: '40px', md: '32px' }}
+          h={{ base: '40px', md: '32px' }}
+          borderRadius="full"
+          bg={{ base: 'whiteAlpha.800', md: 'transparent' }}
+          _hover={{ bg: 'whiteAlpha.900' }}
+          _focus={{ boxShadow: 'none', outline: 'none' }}
+        />
+        <ModalBody pb={8} position="relative" zIndex={1} px={{ base: 2, md: 8 }}>
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
             <VStack spacing={6} align="stretch">
               <Text color={textColor} fontSize="lg">
@@ -157,7 +171,9 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
               <Box position="relative" h="300px" borderRadius="lg" overflow="hidden">
                 <Image
                   src={project.title === 'Vero Photography' 
-                    ? '/projects/veronica-photography/optimized/screenshot-main.png'
+                    ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730845/screenshot-main_x8eg1w.png'
+                    : project.title === 'GrumpyShib'
+                    ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736106/screenshot-main_qfqdih.png'
                     : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-main.png`}
                   alt={`${project.title} screenshot`}
                   objectFit="cover"
@@ -193,7 +209,9 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
                 <Box position="relative" h="150px" borderRadius="lg" overflow="hidden">
                   <Image
                     src={project.title === 'Vero Photography'
-                      ? '/projects/veronica-photography/optimized/screenshot-1.png'
+                      ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730840/screenshot-1_ek1hhn.png'
+                      : project.title === 'GrumpyShib'
+                      ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736106/screenshot-1_aaacjv.png'
                       : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-1.png`}
                     alt={`${project.title} screenshot 1`}
                     objectFit="cover"
@@ -228,7 +246,9 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
                 <Box position="relative" h="150px" borderRadius="lg" overflow="hidden">
                   <Image
                     src={project.title === 'Vero Photography'
-                      ? '/projects/veronica-photography/optimized/screenshot-2.png'
+                      ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730840/screenshot-2_erbqrm.png'
+                      : project.title === 'GrumpyShib'
+                      ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736106/screenshot-2_xooeut.png'
                       : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-2.png`}
                     alt={`${project.title} screenshot 2`}
                     objectFit="cover"

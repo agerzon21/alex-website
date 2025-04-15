@@ -1,170 +1,263 @@
-import { Box, Container, Flex, useColorModeValue, Link, Image, Text } from '@chakra-ui/react';
-import { motion, useScroll } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Box, Flex, useColorModeValue, useMediaQuery, Image } from '@chakra-ui/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const MotionBox = motion(Box);
-const MotionText = motion(Text);
-
-const Navbar = () => {
-  const { scrollY } = useScroll();
-  const [isScrolled, setIsScrolled] = useState(false);
-  
+const Navbar: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile] = useMediaQuery('(max-width: 768px)');
   const bgColor = useColorModeValue(
     'rgba(255, 255, 255, 0.85)',
     'rgba(26, 32, 44, 0.85)'
   );
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
-  const textColor = useColorModeValue('gray.700', 'gray.300');
-  const hoverColor = useColorModeValue('#3182CE', '#63B3ED');
 
   useEffect(() => {
-    const unsubscribe = scrollY.on('change', (y: number) => {
-      setIsScrolled(y > 20);
-    });
-    return () => unsubscribe();
-  }, [scrollY]);
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      setIsMenuOpen(false);
+    } else if (id === 'hero') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setIsMenuOpen(false);
     }
   };
 
-  const leftNavItems = ['About', 'Skills'];
-  const rightNavItems = ['Projects', 'Contact'];
-
-  const NavLink = ({ label }: { label: string }) => (
-    <Box
-      position="relative"
-      cursor="pointer"
-      onClick={() => scrollToSection(label.toLowerCase())}
-      mx={3}
-      display="flex"
-      alignItems="center"
-    >
-      <MotionBox
-        whileHover={{ y: -2 }}
-        transition={{ duration: 0.2 }}
-      >
-        <MotionText
-          color={textColor}
-          fontSize="15px"
-          fontWeight="500"
-          whileHover={{ color: hoverColor }}
-          transition={{ duration: 0.2 }}
-        >
-          {label}
-        </MotionText>
-        <Box
-          position="absolute"
-          bottom="-1px"
-          left={0}
-          right={0}
-          height="2px"
-          _before={{
-            content: '""',
-            position: "absolute",
-            left: 0,
-            bottom: 0,
-            height: "100%",
-            width: 0,
-            bg: hoverColor,
-            transition: "width 0.3s ease",
-          }}
-          _groupHover={{
-            _before: {
-              width: "100%"
-            }
-          }}
-        />
-      </MotionBox>
-    </Box>
-  );
-
   return (
-    <MotionBox
-      as="nav"
-      position="fixed"
-      w="100%"
-      bg={bgColor}
-      backdropFilter="blur(8px)"
-      boxShadow={isScrolled ? 'sm' : 'none'}
-      borderBottom="1px"
-      borderColor={isScrolled ? borderColor : 'transparent'}
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      zIndex={1000}
-      h="70px"
-      style={{
-        transition: 'border-color 0.3s ease, box-shadow 0.3s ease'
-      }}
-    >
-      <Container maxW="container.xl" h="100%">
-        <Flex justify="center" align="center" position="relative" h="100%">
-          {/* Left Navigation */}
-          <Flex position="absolute" left="32%" h="100%" align="center">
-            {leftNavItems.map((label, index) => (
-              <Flex key={label} align="center" role="group">
-                <NavLink label={label} />
-                {index < leftNavItems.length - 1 && (
-                  <Box
-                    h="4"
-                    w="1px"
-                    bg="gray.300"
-                    mx={3}
-                  />
-                )}
-              </Flex>
-            ))}
-          </Flex>
+    <>
+      <Box
+        position="fixed"
+        top={0}
+        left={0}
+        right={0}
+        zIndex={1000}
+        bg={isMenuOpen ? 'black' : bgColor}
+        transition="background-color 0.3s ease"
+        backdropFilter="blur(6px)"
+        boxShadow="0 2px 6px rgba(0,0,0,0.18)"
+      >
+        <Flex
+          maxW="1600px"
+          mx="auto"
+          px={10}
+          py={2.5}
+          justify="center"
+          align="center"
+          position="relative"
+          h="70px"
+        >
+          {!isMobile && (
+            <Flex position="absolute" left="37%" align="center" gap={6}>
+              <Box
+                as="button"
+                color="gray.800"
+                fontSize="15px"
+                fontWeight="500"
+                onClick={() => scrollToSection('about')}
+                _hover={{ color: 'blue.500' }}
+                _focus={{ outline: 'none' }}
+                _active={{ outline: 'none' }}
+              >
+                About
+              </Box>
+              <Box h="4" w="0.5px" bg="gray.400" opacity={0.5} />
+              <Box
+                as="button"
+                color="gray.800"
+                fontSize="15px"
+                fontWeight="500"
+                onClick={() => scrollToSection('skills')}
+                _hover={{ color: 'blue.500' }}
+                _focus={{ outline: 'none' }}
+                _active={{ outline: 'none' }}
+              >
+                Skills
+              </Box>
+            </Flex>
+          )}
 
-          {/* Centered Logo */}
-          <MotionBox
-            initial={{ rotate: 0 }}
-            whileHover={{ 
-              scale: 1.05,
-              rotate: [0, -2, 2, -2, 0]
+          {/* Logo */}
+          <Box 
+            as="button"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              if (isMenuOpen) setIsMenuOpen(false);
             }}
-            transition={{
-              scale: { duration: 0.2 },
-              rotate: { 
-                duration: 0.5,
-                ease: "easeInOut"
-              }
+            _focus={{ outline: 'none' }}
+            _active={{ outline: 'none', bg: 'transparent' }}
+            _hover={{ bg: 'transparent' }}
+            mx="auto"
+            userSelect="none"
+            sx={{ WebkitTapHighlightColor: 'transparent' }}
+          >
+            <Image
+              src="/images/main-logo.svg"
+              alt="Alex Gerzon Logo"
+              h="45px"
+              w="auto"
+              objectFit="contain"
+              filter={isMenuOpen ? "brightness(0) invert(1)" : "none"}
+              transition="filter 0.3s ease"
+              userSelect="none"
+            />
+          </Box>
+
+          {!isMobile && (
+            <Flex position="absolute" right="35%" align="center" gap={6}>
+              <Box
+                as="button"
+                color="gray.800"
+                fontSize="15px"
+                fontWeight="500"
+                onClick={() => scrollToSection('projects')}
+                _hover={{ color: 'blue.500' }}
+                _focus={{ outline: 'none' }}
+                _active={{ outline: 'none' }}
+              >
+                Projects
+              </Box>
+              <Box h="4" w="0.5px" bg="gray.400" opacity={0.5} />
+              <Box
+                as="button"
+                color="gray.800"
+                fontSize="15px"
+                fontWeight="500"
+                onClick={() => scrollToSection('contact')}
+                _hover={{ color: 'blue.500' }}
+                _focus={{ outline: 'none' }}
+                _active={{ outline: 'none' }}
+              >
+                Contact
+              </Box>
+            </Flex>
+          )}
+
+          {/* Burger Menu */}
+          {isMobile && (
+            <Box
+              position="absolute"
+              right={4}
+              cursor="pointer"
+              onClick={toggleMenu}
+              zIndex={1001}
+              color={isMenuOpen ? "white" : "currentColor"}
+              transition="color 0.3s ease"
+              w="24px"
+              h="18px"
+              _focus={{ outline: 'none' }}
+              _active={{ outline: 'none', bg: 'transparent' }}
+              _hover={{ bg: 'transparent' }}
+              tabIndex={-1}
+              userSelect="none"
+              sx={{ WebkitTapHighlightColor: 'transparent' }}
+            >
+              <Box
+                position="absolute"
+                top="0"
+                w="24px"
+                h="2px"
+                bg="currentColor"
+                transformOrigin="center"
+                transform={isMenuOpen ? 'translateY(8px) rotate(45deg)' : 'none'}
+                transition="transform 0.3s ease"
+                userSelect="none"
+              />
+              <Box
+                position="absolute"
+                top="8px"
+                w="24px"
+                h="2px"
+                bg="currentColor"
+                opacity={isMenuOpen ? 0 : 1}
+                transition="all 0.3s ease"
+                userSelect="none"
+              />
+              <Box
+                position="absolute"
+                top="16px"
+                w="24px"
+                h="2px"
+                bg="currentColor"
+                transformOrigin="center"
+                transform={isMenuOpen ? 'translateY(-8px) rotate(-45deg)' : 'none'}
+                transition="transform 0.3s ease"
+                userSelect="none"
+              />
+            </Box>
+          )}
+        </Flex>
+      </Box>
+
+      {/* Full Screen Menu */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'black',
+              zIndex: 999,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px'
             }}
           >
-            <Link href="/" _hover={{ textDecoration: 'none' }}>
-              <Image
-                src="/images/main-logo.svg"
-                alt="Alex Gerzon Logo"
-                h="45px"
-                w="auto"
-                objectFit="contain"
-              />
-            </Link>
-          </MotionBox>
-
-          {/* Right Navigation */}
-          <Flex position="absolute" right="30%" h="100%" align="center">
-            {rightNavItems.map((label, index) => (
-              <Flex key={label} align="center" role="group">
-                <NavLink label={label} />
-                {index < rightNavItems.length - 1 && (
-                  <Box
-                    h="4"
-                    w="1px"
-                    bg="gray.300"
-                    mx={3}
-                  />
-                )}
-              </Flex>
+            {/* Mobile menu items */}
+            {['About', 'Skills', 'Projects', 'Contact'].map((item, index) => (
+              <motion.div
+                key={item}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + index * 0.1 }}
+              >
+                <Box
+                  color="white"
+                  fontSize="xl"
+                  fontWeight="medium"
+                  textAlign="center"
+                  cursor="pointer"
+                  mb={index < 3 ? 4 : 0}
+                  onClick={() => {
+                    scrollToSection(item.toLowerCase());
+                    setIsMenuOpen(false);
+                  }}
+                  _focus={{ outline: 'none' }}
+                  _active={{ outline: 'none', bg: 'transparent' }}
+                  _hover={{ bg: 'transparent' }}
+                  userSelect="none"
+                  sx={{ WebkitTapHighlightColor: 'transparent' }}
+                >
+                  {item}
+                </Box>
+              </motion.div>
             ))}
-          </Flex>
-        </Flex>
-      </Container>
-    </MotionBox>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

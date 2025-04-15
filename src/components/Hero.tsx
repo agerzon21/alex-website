@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Container, Heading, Text, VStack, Image } from '@chakra-ui/react';
 import { motion, Variants } from 'framer-motion';
 
 const floatingAnimation: Variants = {
@@ -46,16 +46,29 @@ const Hero = () => {
                 boxSize="200px"
                 boxShadow="2xl"
               >
-                <Box
-                  as="img"
-                  src="/images/optimized/profile.jpeg"
-                  alt="Profile Picture"
+                <Image
+                  src="https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736526/profile_voc2kq.jpg"
+                  alt="Alex Gerzon"
                   w="100%"
                   h="100%"
                   objectFit="cover"
                   style={{
                     transform: 'scale(1.2) translateX(5px)'
                   }}
+                  loading="eager"
+                  decoding="async"
+                  fallback={
+                    <Box
+                      w="100%"
+                      h="100%"
+                      bg="gray.200"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <Text color="gray.500">Loading...</Text>
+                    </Box>
+                  }
                 />
               </Box>
             </motion.div>
