@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Heading, HStack, Icon, Link, Text, useColorModeValue, VStack } from '@chakra-ui/react';
+import { Box, Container, Heading, HStack, Icon, Link, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 

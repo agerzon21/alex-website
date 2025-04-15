@@ -1,11 +1,10 @@
-import { Box, Container, Flex, SimpleGrid, Heading, Image, Link, Text, useColorModeValue, VStack, Icon, Tooltip } from '@chakra-ui/react';
+import { Box, Container, SimpleGrid, Heading, Image, Link, Text, useColorModeValue, VStack, Icon, Tooltip } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaLock } from 'react-icons/fa';
 import ProjectModal from './ProjectModal';
 import { useState, useEffect } from 'react';
 
 const MotionBox = motion(Box);
-const MotionFlex = motion(Flex);
 const MotionImage = motion(Image);
 
 interface Project {
@@ -62,7 +61,7 @@ const projects: Project[] = [
   }
 ];
 
-const CarouselPreview = ({ project, onClick }: { project: Project; onClick: () => void }) => {
+const CarouselPreview = ({ project }: { project: Project }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -113,7 +112,7 @@ const CarouselPreview = ({ project, onClick }: { project: Project; onClick: () =
   );
 };
 
-const StaticPreview = ({ project, onClick }: { project: Project; onClick: () => void }) => {
+const StaticPreview = ({ project }: { project: Project }) => {
   return (
     <Box
       h="200px"
@@ -234,11 +233,11 @@ const StaticPreview = ({ project, onClick }: { project: Project; onClick: () => 
   );
 };
 
-const ProjectPreview = (props: { project: Project; onClick: () => void }) => {
+const ProjectPreview = (props: { project: Project }) => {
   return props.project.hasCarousel ? (
-    <CarouselPreview {...props} />
+    <CarouselPreview project={props.project} />
   ) : (
-    <StaticPreview {...props} />
+    <StaticPreview project={props.project} />
   );
 };
 
@@ -246,8 +245,6 @@ const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const cardBg = useColorModeValue('white', 'gray.800');
   const cardBorder = useColorModeValue('gray.200', 'gray.700');
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const textColor = useColorModeValue('gray.600', 'gray.400');
 
   return (
     <Box 
@@ -296,7 +293,7 @@ const Projects = () => {
                 }}
                 onClick={() => setSelectedProject(project)}
               >
-                <ProjectPreview project={project} onClick={() => setSelectedProject(project)} />
+                <ProjectPreview project={project} />
                 <Box p={6} position="relative" minH="250px">
                   <Box position="absolute" bottom={6} left={6} right={6}>
                     <Box display="flex" flexWrap="wrap" gap={2} mb={4}>

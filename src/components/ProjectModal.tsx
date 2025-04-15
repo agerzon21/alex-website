@@ -3,7 +3,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   Button,
@@ -21,8 +20,6 @@ import {
 } from '@chakra-ui/react';
 import { FaGithub, FaExternalLinkAlt, FaLock, FaRocket, FaShieldAlt, FaChartLine } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-
-const MotionBox = motion(Box);
 
 interface ProjectModalProps {
   isOpen: boolean;
