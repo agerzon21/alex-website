@@ -121,26 +121,24 @@ const Navbar: React.FC = () => {
           {/* Logo */}
           <Box 
             as="button"
-            onClick={() => {
-              if (!isMobile || !isMenuOpen) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-              if (isMenuOpen) {
-                setIsMenuOpen(false);
-              }
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              scrollToSection('hero');
             }}
             _focus={{ outline: 'none' }}
             _active={{ outline: 'none', bg: 'transparent' }}
             _hover={{ bg: 'transparent' }}
             mx="auto"
             userSelect="none"
+            position="relative"
+            zIndex={1002}
             sx={{ WebkitTapHighlightColor: 'transparent' }}
           >
             <Image
               src="/images/main-logo.svg"
-              srcSet="/images/main-logo.svg 1x, /images/main-logo.svg 2x"
+              srcSet="/images/main-logo.svg 1x, /images/main-logo.svg 2x, /images/main-logo.svg 3x"
               alt="Alex Gerzon Logo"
-              h="45px"
+              h={{ base: "40px", md: "45px" }}
               w="auto"
               objectFit="contain"
               filter={isMenuOpen ? "brightness(0) invert(1)" : "none"}
@@ -150,8 +148,12 @@ const Navbar: React.FC = () => {
               style={{
                 imageRendering: '-webkit-optimize-contrast',
                 transform: 'translateZ(0)',
-                backfaceVisibility: 'hidden'
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
+                WebkitFontSmoothing: 'antialiased',
+                MozOsxFontSmoothing: 'grayscale'
               }}
+              draggable={false}
             />
           </Box>
 
