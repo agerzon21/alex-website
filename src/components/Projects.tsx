@@ -97,7 +97,7 @@ const CarouselPreview = ({ project }: { project: Project }) => {
           left={0}
           initial={{ opacity: 0 }}
           animate={{ opacity: index === currentImageIndex ? 1 : 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
         />
       ))}
       <Box

@@ -21,7 +21,7 @@ const MotionBox = motion(Box);
 
 const Hero = () => {
   return (
-    <motion.div style={{ width: '100%' }}>
+    <Box width="100%">
       <MotionBox
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -37,6 +37,7 @@ const Hero = () => {
           <VStack spacing={8} align="center">
             <motion.div
               variants={floatingAnimation}
+              initial="animate"
               animate="animate"
             >
               <Box
@@ -88,7 +89,7 @@ const Hero = () => {
           </VStack>
         </Container>
       </MotionBox>
-    </motion.div>
+    </Box>
   );
 };
 
