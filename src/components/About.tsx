@@ -6,7 +6,7 @@ const MotionBox = motion(Box);
 
 const About = () => {
   return (
-    <Box id="about" py={20} bg="gray.50">
+    <Box id="about" py={12} bg="gray.50">
       <Container maxW="container.xl">
         <VStack spacing={12} align="stretch">
           <MotionBox

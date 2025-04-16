@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile] = useMediaQuery('(max-width: 768px)');
+  const [isCompact] = useMediaQuery('(max-width: 1024px)');
   const bgColor = useColorModeValue(
     'rgba(255, 255, 255, 0.85)',
     'rgba(26, 32, 44, 0.85)'
@@ -88,8 +89,8 @@ const Navbar: React.FC = () => {
           position="relative"
           h="70px"
         >
-          {!isMobile && (
-            <Flex position="absolute" left="37%" align="center" gap={6}>
+          {!isCompact && (
+            <Flex position="absolute" left="30%" align="center" gap={6}>
               <Box
                 as="button"
                 color="gray.800"
@@ -108,12 +109,12 @@ const Navbar: React.FC = () => {
                 color="gray.800"
                 fontSize="15px"
                 fontWeight="500"
-                onClick={() => scrollToSection('skills')}
+                onClick={() => scrollToSection('experience')}
                 _hover={{ color: 'blue.500' }}
                 _focus={{ outline: 'none' }}
                 _active={{ outline: 'none' }}
               >
-                Skills
+                Experience
               </Box>
             </Flex>
           )}
@@ -135,7 +136,7 @@ const Navbar: React.FC = () => {
             sx={{ WebkitTapHighlightColor: 'transparent' }}
           >
             <Image
-              src={isMobile ? "/images/main-logo@2x.png" : "/images/main-logo.svg"}
+              src={isCompact ? "/images/main-logo@2x.png" : "/images/main-logo.svg"}
               alt="Alex Gerzon Logo"
               h={{ base: "46px", md: "45px" }}
               w="auto"
@@ -156,8 +157,8 @@ const Navbar: React.FC = () => {
             />
           </Box>
 
-          {!isMobile && (
-            <Flex position="absolute" right="35%" align="center" gap={6}>
+          {!isCompact && (
+            <Flex position="absolute" right="30%" align="center" gap={6}>
               <Box
                 as="button"
                 color="gray.800"
@@ -187,7 +188,7 @@ const Navbar: React.FC = () => {
           )}
 
           {/* Burger Menu */}
-          {isMobile && (
+          {isCompact && (
             <Box
               position="absolute"
               right={4}
@@ -268,7 +269,7 @@ const Navbar: React.FC = () => {
             }}
           >
             {/* Mobile menu items */}
-            {['About', 'Skills', 'Projects', 'Contact'].map((item, index) => (
+            {['About', 'Experience', 'Projects', 'Contact'].map((item, index) => (
               <motion.div
                 key={item}
                 initial={{ opacity: 0, y: 20 }}

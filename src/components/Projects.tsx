@@ -384,7 +384,7 @@ const Projects = () => {
   return (
     <Box 
       id="projects" 
-      py={20} 
+      py={12} 
       bg={useColorModeValue('gray.50', 'gray.900')}
       position="relative"
       zIndex={1}

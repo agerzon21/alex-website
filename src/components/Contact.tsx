@@ -15,7 +15,7 @@ const Contact = () => {
   ];
 
   return (
-    <Box id="contact" py={20}>
+    <Box id="contact" py={12}>
       <Container maxW="container.xl">
         <VStack spacing={12} align="center">
           <MotionBox
