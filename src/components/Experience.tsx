@@ -1,7 +1,8 @@
+import { useRef } from 'react';
 import { Box, Container, Heading, Text, HStack, VStack, Image, useColorModeValue, Badge, IconButton } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 
 const MotionBox = motion(Box);
 

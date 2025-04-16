@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobile] = useMediaQuery('(max-width: 768px)');
   const [isCompact] = useMediaQuery('(max-width: 1024px)');
   const bgColor = useColorModeValue(
     'rgba(255, 255, 255, 0.85)',
