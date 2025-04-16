@@ -137,7 +137,7 @@ const Navbar: React.FC = () => {
             <Image
               src="/images/main-logo.svg"
               alt="Alex Gerzon Logo"
-              h={{ base: "40px", md: "45px" }}
+              h={{ base: "46px", md: "45px" }}
               w="auto"
               objectFit="contain"
               filter={isMenuOpen ? "brightness(0) invert(1)" : "none"}
@@ -145,16 +145,13 @@ const Navbar: React.FC = () => {
               userSelect="none"
               loading="eager"
               style={{
-                imageRendering: 'crisp-edges',
-                transform: 'translateZ(0) scale(1.0)',
+                imageRendering: '-webkit-optimize-contrast',
+                transform: 'translateZ(0) scale(1.02)',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
                 WebkitFontSmoothing: 'antialiased',
                 MozOsxFontSmoothing: 'grayscale',
-                willChange: 'transform',
-                maxWidth: 'none',
-                width: '100%',
-                height: '100%'
+                shapeRendering: 'geometricPrecision'
               }}
               draggable={false}
             />
