@@ -135,7 +135,7 @@ const Navbar: React.FC = () => {
             sx={{ WebkitTapHighlightColor: 'transparent' }}
           >
             <Image
-              src="/images/main-logo.svg"
+              src={isMobile ? "/images/main-logo@2x.png" : "/images/main-logo.svg"}
               alt="Alex Gerzon Logo"
               h={{ base: "46px", md: "45px" }}
               w="auto"
@@ -145,13 +145,12 @@ const Navbar: React.FC = () => {
               userSelect="none"
               loading="eager"
               style={{
-                imageRendering: '-webkit-optimize-contrast',
-                transform: 'translateZ(0) scale(1.02)',
+                imageRendering: 'auto',
+                transform: 'translateZ(0)',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
                 WebkitFontSmoothing: 'antialiased',
-                MozOsxFontSmoothing: 'grayscale',
-                shapeRendering: 'geometricPrecision'
+                MozOsxFontSmoothing: 'grayscale'
               }}
               draggable={false}
             />
