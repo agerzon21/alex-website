@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCompact] = useMediaQuery('(max-width: 1024px)');
+  const [isLoaded, setIsLoaded] = useState(false);
   const bgColor = useColorModeValue(
     'rgba(255, 255, 255, 0.85)',
     'rgba(26, 32, 44, 0.85)'
@@ -12,6 +13,11 @@ const Navbar: React.FC = () => {
 
   // Store the initial scroll position
   const scrollPosition = useRef(0);
+
+  // Set isLoaded after initial render
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   const lockScroll = () => {
     scrollPosition.current = window.pageYOffset;
@@ -78,6 +84,7 @@ const Navbar: React.FC = () => {
         transition="background-color 0.3s ease"
         backdropFilter="blur(6px)"
         boxShadow="0 2px 6px rgba(0,0,0,0.18)"
+        visibility={isLoaded ? 'visible' : 'hidden'}
       >
         <Flex
           maxW="1600px"
@@ -89,7 +96,7 @@ const Navbar: React.FC = () => {
           position="relative"
           h="70px"
         >
-          {!isCompact && (
+          {!isCompact && isLoaded && (
             <Flex position="absolute" left="30%" align="center" gap={6}>
               <Box
                 as="button"
@@ -157,7 +164,7 @@ const Navbar: React.FC = () => {
             />
           </Box>
 
-          {!isCompact && (
+          {!isCompact && isLoaded && (
             <Flex position="absolute" right="30%" align="center" gap={6}>
               <Box
                 as="button"
@@ -188,7 +195,7 @@ const Navbar: React.FC = () => {
           )}
 
           {/* Burger Menu */}
-          {isCompact && (
+          {isCompact && isLoaded && (
             <Box
               position="absolute"
               right={4}
