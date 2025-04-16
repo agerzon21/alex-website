@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Flex, useColorModeValue, useMediaQuery, Image } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,59 +10,60 @@ const Navbar: React.FC = () => {
     'rgba(26, 32, 44, 0.85)'
   );
 
-  useEffect(() => {
-    const body = document.body;
-    const position = window.pageYOffset;
+  // Store the initial scroll position
+  const scrollPosition = useRef(0);
 
+  const lockScroll = () => {
+    scrollPosition.current = window.pageYOffset;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollPosition.current}px`;
+    document.body.style.width = '100%';
+  };
+
+  const unlockScroll = () => {
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('position');
+    document.body.style.removeProperty('top');
+    document.body.style.removeProperty('width');
+    window.scrollTo(0, scrollPosition.current);
+  };
+
+  useEffect(() => {
     if (isMenuOpen) {
-      // Lock scroll
-      body.dataset.scrollPosition = position.toString();
-      body.style.overflow = 'hidden';
-      body.style.position = 'fixed';
-      body.style.top = `-${position}px`;
-      body.style.width = '100%';
+      lockScroll();
     } else {
-      // Restore scroll
-      body.style.overflow = '';
-      body.style.position = '';
-      body.style.top = '';
-      body.style.width = '';
-      
-      const scrollPosition = body.dataset.scrollPosition;
-      if (scrollPosition) {
-        window.scrollTo({
-          top: Number(scrollPosition),
-          left: 0,
-          behavior: 'auto'
-        });
-        body.dataset.scrollPosition = '';
-      }
+      unlockScroll();
     }
+
+    // Cleanup function to ensure scroll is unlocked when component unmounts
+    return () => {
+      if (document.body.style.position === 'fixed') {
+        unlockScroll();
+      }
+    };
   }, [isMenuOpen]);
 
   const toggleMenu = () => {
-    // Always allow toggling the menu
     setIsMenuOpen(!isMenuOpen);
   };
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
+    setIsMenuOpen(false); // This will trigger the useEffect to unlock scroll
     
-    if (element) {
-      setIsMenuOpen(false);
-      setTimeout(() => {
+    // Small delay to ensure scroll is unlocked before scrolling
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
-      }, 300);
-    } else if (id === 'hero') {
-      setIsMenuOpen(false);
-      setTimeout(() => {
+      } else if (id === 'hero') {
         window.scrollTo({
           top: 0,
           left: 0,
           behavior: 'smooth'
         });
-      }, 300);
-    }
+      }
+    }, 10);
   };
 
   return (
