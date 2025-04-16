@@ -192,11 +192,26 @@ const Experience = () => {
               opacity={canScrollLeft ? 1 : 0.3}
               onClick={() => {
                 if (containerRef.current) {
-                  const scrollAmount = window.innerWidth < 768 ? -288 : -300;
-                  containerRef.current.scrollBy({ 
-                    left: scrollAmount, 
-                    behavior: 'smooth' 
-                  });
+                  const container = containerRef.current;
+                  const cards = container.querySelectorAll('.experience-card');
+                  const containerRect = container.getBoundingClientRect();
+                  let targetCard: Element | null = null;
+
+                  // Find the first card that's partially visible on the left
+                  for (const card of cards) {
+                    const cardRect = card.getBoundingClientRect();
+                    if (cardRect.left >= containerRect.left) {
+                      targetCard = card;
+                      break;
+                    }
+                  }
+
+                  if (targetCard) {
+                    const prevCard = targetCard.parentElement?.previousElementSibling?.querySelector('.experience-card');
+                    if (prevCard) {
+                      prevCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    }
+                  }
                 }
               }}
               _hover={{
@@ -233,11 +248,26 @@ const Experience = () => {
               opacity={canScrollRight ? 1 : 0.3}
               onClick={() => {
                 if (containerRef.current) {
-                  const scrollAmount = window.innerWidth < 768 ? 288 : 300;
-                  containerRef.current.scrollBy({ 
-                    left: scrollAmount, 
-                    behavior: 'smooth' 
-                  });
+                  const container = containerRef.current;
+                  const cards = container.querySelectorAll('.experience-card');
+                  const containerRect = container.getBoundingClientRect();
+                  let targetCard: Element | null = null;
+
+                  // Find the last fully visible card
+                  for (const card of Array.from(cards).reverse()) {
+                    const cardRect = card.getBoundingClientRect();
+                    if (cardRect.right <= containerRect.right) {
+                      targetCard = card;
+                      break;
+                    }
+                  }
+
+                  if (targetCard) {
+                    const nextCard = targetCard.parentElement?.nextElementSibling?.querySelector('.experience-card');
+                    if (nextCard) {
+                      nextCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    }
+                  }
                 }
               }}
               _hover={{
@@ -265,7 +295,7 @@ const Experience = () => {
               overflowX="auto"
               mx={[4, null, 12]}
               sx={{
-                scrollSnapType: ['x mandatory', null, 'none'],
+                scrollSnapType: 'x mandatory',
                 scrollBehavior: 'smooth',
                 '&::-webkit-scrollbar': {
                   display: 'none',
@@ -298,8 +328,8 @@ const Experience = () => {
                       position="relative"
                       minW="280px"
                       sx={{
-                        scrollSnapAlign: ['center', null, 'none'],
-                        scrollSnapStop: ['always', null, 'none'],
+                        scrollSnapAlign: 'center',
+                        scrollSnapStop: 'always',
                         '& .timeline-line': {
                           transition: 'transform 0.3s',
                         }
