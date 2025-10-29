@@ -143,7 +143,7 @@ const Navbar: React.FC = () => {
             sx={{ WebkitTapHighlightColor: 'transparent' }}
           >
             <Image
-              src={isCompact ? "/images/main-logo@2x.png" : "/images/main-logo.svg"}
+              src="/images/main-logo@2x.png"
               alt="Alex Gerzon Logo"
               h={{ base: "46px", md: "45px" }}
               w="auto"

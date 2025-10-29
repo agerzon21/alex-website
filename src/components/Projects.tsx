@@ -15,6 +15,7 @@ interface Project {
   images: string[];
   hasCarousel?: boolean;
   isPrivate?: boolean;
+  isMobile?: boolean;
   stats?: {
     performance?: string;
     features?: string[];
@@ -24,8 +25,29 @@ interface Project {
 
 const projects: Project[] = [
   {
+    title: 'SpySocial',
+    description: 'The ultimate spy party game where everyone plays on their own device! A thrilling multiplayer social deduction game where players identify spies among them using real-time voting, private rooms, and customizable settings. Built with React Native and Supabase.',
+    tech: ['React Native', 'React', 'Javascript/Typescript', 'PLpgSQL', 'Supabase'],
+    github: 'https://github.com/agerzon21/spy-social-website',
+    live: 'https://spysocial.app',
+    images: [
+      '/projects/spysocial/1.JPG',
+      '/projects/spysocial/2.JPG',
+      '/projects/spysocial/3.JPG',
+      '/projects/spysocial/4.JPG'
+    ],
+    hasCarousel: false,
+    isPrivate: false,
+    isMobile: true,
+    stats: {
+      performance: '3-21 Players',
+      features: ['Real-time Multiplayer', 'Private Rooms', 'Multilingual Support'],
+      impact: 'AI-Driven Development'
+    }
+  },
+  {
     title: 'Vero Photography',
-    description: 'A professional photography portfolio website showcasing stunning visual work',
+    description: 'A professional photography portfolio website showcasing stunning visual work through an elegant, minimalist design. Features dynamic image galleries, smooth animations, responsive layouts optimized for all devices, and an intuitive contact system. Built with modern web technologies to deliver a fast, accessible, and visually captivating experience for clients and visitors.',
     tech: ['React', 'TypeScript', 'Chakra UI'],
     github: 'https://github.com/agerzon21/veronica-website',
     live: 'https://vero.photography',
@@ -144,6 +166,162 @@ const CarouselPreview = ({ project }: { project: Project }) => {
         right={0}
         bottom={0}
         bg="linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.15))"
+      />
+    </Box>
+  );
+};
+
+const MobilePhonePreview = ({ project }: { project: Project }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, [project.images.length]);
+
+  return (
+    <Box
+      h="200px"
+      bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      position="relative"
+      overflow="visible"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      transition="all 0.3s"
+    >
+      {/* Logo on the left */}
+      <MotionBox
+        position="absolute"
+        left="5%"
+        top="30%"
+        transform="translateY(-50%)"
+        animate={{
+          y: [-1.5, 1.5, -1.5],
+          rotate: [-1.5, 1.5, -1.5],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        opacity={0.9}
+      >
+        <Image
+          src="/projects/spysocial/logo.png"
+          alt="SpySocial Logo"
+          boxSize="100px"
+          objectFit="contain"
+          filter="drop-shadow(0 4px 12px rgba(0,0,0,0.3))"
+        />
+      </MotionBox>
+
+      {/* Floating Phone Mockup */}
+      <MotionBox
+        animate={{
+          y: [0, -10, 0],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        maxH="180px"
+        w="auto"
+        zIndex={2}
+      >
+        {/* Phone Bezel/Frame */}
+        <Box
+          position="relative"
+          bg="black"
+          borderRadius="20px"
+          p="8px"
+          boxShadow="0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1)"
+        >
+          {/* Screen */}
+          <Box
+            position="relative"
+            w="90px"
+            h="180px"
+            bg="white"
+            borderRadius="14px"
+            overflow="hidden"
+          >
+            {/* Screenshots Carousel */}
+            {project.images.map((image, index) => (
+              <MotionImage
+                key={image}
+                src={image}
+                alt={`${project.title} screenshot ${index + 1}`}
+                objectFit="cover"
+                w="100%"
+                h="100%"
+                position="absolute"
+                top={0}
+                left={0}
+                initial={{ opacity: 0 }}
+                animate={{ 
+                  opacity: index === currentImageIndex ? 1 : 0,
+                }}
+                transition={{ 
+                  duration: 1,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </Box>
+        </Box>
+      </MotionBox>
+
+      {/* Icon on the right */}
+      <MotionBox
+        position="absolute"
+        right="10%"
+        top="35%"
+        transform="translateY(-50%)"
+        animate={{
+          y: [1.5, -1.5, 1.5],
+          rotate: [1.5, -1.5, 1.5],
+        }}
+        transition={{
+          duration: 4.5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        opacity={0.9}
+      >
+        <Image
+          src="/projects/spysocial/icon.png"
+          alt="SpySocial Icon"
+          boxSize="70px"
+          objectFit="contain"
+          borderRadius="12px"
+          filter="drop-shadow(0 4px 12px rgba(0,0,0,0.3))"
+        />
+      </MotionBox>
+
+      {/* Background Elements */}
+      <MotionBox
+        position="absolute"
+        top="50%"
+        left="50%"
+        w="150px"
+        h="150px"
+        borderRadius="full"
+        bg="whiteAlpha.200"
+        filter="blur(40px)"
+        animate={{
+          scale: [1, 1.2, 1],
+          rotate: [0, 180, 360],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "linear"
+        }}
       />
     </Box>
   );
@@ -319,7 +497,9 @@ const ProjectPreview = (props: { project: Project }) => {
           WebkitBackfaceVisibility: 'hidden'
         }}
       >
-        {project.hasCarousel ? (
+        {project.isMobile ? (
+          <MobilePhonePreview project={project} />
+        ) : project.hasCarousel ? (
           <CarouselPreview project={project} />
         ) : (
           <StaticPreview project={project} />
@@ -396,6 +576,7 @@ const Projects = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
+            textAlign="center"
           >
             <Heading size="2xl" mb={4}>
               Featured Projects
@@ -405,7 +586,7 @@ const Projects = () => {
             </Text>
           </MotionBox>
 
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
             {projects.map((project, index) => (
               <MotionBox
                 key={project.title}

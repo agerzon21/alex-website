@@ -1,9 +1,15 @@
-import { Box, Container, Heading, Text, VStack, Image } from '@chakra-ui/react';
+import { Box, Container, Heading, Text, VStack, Image, HStack, IconButton, Button } from '@chakra-ui/react';
 import { motion, Variants } from 'framer-motion';
+import { FaLinkedin, FaGithub, FaEnvelope } from 'react-icons/fa';
 
-const floatingAnimation: Variants = {
+const glowAnimation = {
   animate: {
-    y: [0, -20, 0],
+    boxShadow: [
+      '0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(66, 153, 225, 0.2)',
+      '0 0 30px rgba(255, 255, 255, 0.5), 0 0 60px rgba(66, 153, 225, 0.4)',
+      '0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(66, 153, 225, 0.2)',
+    ],
+    scale: [1, 1.02, 1],
     transition: {
       duration: 3,
       repeat: Infinity,
@@ -18,10 +24,16 @@ const fadeInUp: Variants = {
 };
 
 const MotionBox = motion(Box);
+const MotionHeading = motion(Heading);
 
 const Hero = () => {
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <Box width="100%">
+    <Box width="100%" position="relative" overflow="hidden">
       <MotionBox
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -32,28 +44,55 @@ const Hero = () => {
         alignItems="center"
         justifyContent="center"
         color="white"
+        position="relative"
       >
-        <Container maxW="container.xl">
+        {/* Floating Particles Background */}
+        {[...Array(20)].map((_, i) => (
+          <MotionBox
+            key={i}
+            position="absolute"
+            borderRadius="full"
+            bg="whiteAlpha.200"
+            initial={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+            }}
+            animate={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+            }}
+            transition={{
+              duration: 20 + Math.random() * 20,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            width={`${Math.random() * 6 + 2}px`}
+            height={`${Math.random() * 6 + 2}px`}
+            opacity={0.3}
+          />
+        ))}
+
+        <Container maxW="container.xl" position="relative" zIndex={1}>
           <VStack spacing={8} align="center">
-            <motion.div
-              variants={floatingAnimation}
+            {/* Profile Image */}
+            <MotionBox
+              borderRadius="full"
+              overflow="hidden"
+              boxSize="200px"
+              border="4px solid"
+              borderColor="whiteAlpha.400"
+              variants={glowAnimation}
               initial="animate"
               animate="animate"
             >
-              <Box
-                borderRadius="full"
-                overflow="hidden"
-                boxSize="200px"
-                boxShadow="2xl"
-              >
                 <Image
-                  src="https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736526/profile_voc2kq.jpg"
+                  src="/images/optimized/profile.JPG"
                   alt="Alex Gerzon"
                   w="100%"
                   h="100%"
                   objectFit="cover"
                   style={{
-                    transform: 'scale(1.2) translateX(5px)'
+                    transform: 'scale(1.2) translate(5px, 15px)'
                   }}
                   loading="eager"
                   decoding="async"
@@ -70,21 +109,37 @@ const Hero = () => {
                     </Box>
                   }
                 />
-              </Box>
-            </motion.div>
+            </MotionBox>
+
+            {/* Animated Gradient Name */}
             <motion.div
               variants={fadeInUp}
               initial="initial"
               animate="animate"
               transition={{ duration: 0.3, delay: 0.2 }}
             >
-              <Heading
+              <MotionHeading
                 size="2xl"
                 textAlign="center"
+                bgGradient="linear(to-r, white, cyan.200, white)"
+                bgClip="text"
+                animate={{
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                sx={{
+                  backgroundSize: '200% auto',
+                }}
               >
                 Hi, I'm Alex Gerzon
-              </Heading>
+              </MotionHeading>
             </motion.div>
+
+            {/* Description */}
             <motion.div
               variants={fadeInUp}
               initial="initial"
@@ -92,12 +147,120 @@ const Hero = () => {
               transition={{ duration: 0.3, delay: 0.4 }}
             >
               <Text
-                fontSize="xl"
+                fontSize={{ base: "lg", md: "xl" }}
                 textAlign="center"
-                maxW="600px"
+                maxW="900px"
+                color="whiteAlpha.900"
+                px={4}
+                whiteSpace={{ base: "normal", md: "nowrap" }}
               >
-                Welcome to my personal website. I'm passionate about technology, design, and creating amazing digital experiences.
+                SAP Work Zone & SuccessFactors Lead | Generative AI Automation | Full-Stack Developer
               </Text>
+            </motion.div>
+
+            {/* Social Links */}
+            <motion.div
+              variants={fadeInUp}
+              initial="initial"
+              animate="animate"
+              transition={{ duration: 0.3, delay: 0.6 }}
+            >
+              <HStack spacing={4}>
+                <IconButton
+                  as="a"
+                  href="https://linkedin.com/in/gerzon"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  icon={<FaLinkedin size={24} />}
+                  size="lg"
+                  rounded="full"
+                  bg="whiteAlpha.200"
+                  color="white"
+                  _hover={{
+                    bg: "whiteAlpha.300",
+                    transform: "translateY(-4px)",
+                    boxShadow: "xl",
+                  }}
+                  transition="all 0.3s"
+                />
+                <IconButton
+                  as="a"
+                  href="https://github.com/alexgerzon"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                  icon={<FaGithub size={24} />}
+                  size="lg"
+                  rounded="full"
+                  bg="whiteAlpha.200"
+                  color="white"
+                  _hover={{
+                    bg: "whiteAlpha.300",
+                    transform: "translateY(-4px)",
+                    boxShadow: "xl",
+                  }}
+                  transition="all 0.3s"
+                />
+                <IconButton
+                  as="a"
+                  href="mailto:alex@gerz.dev"
+                  aria-label="Email"
+                  icon={<FaEnvelope size={24} />}
+                  size="lg"
+                  rounded="full"
+                  bg="whiteAlpha.200"
+                  color="white"
+                  _hover={{
+                    bg: "whiteAlpha.300",
+                    transform: "translateY(-4px)",
+                    boxShadow: "xl",
+                  }}
+                  transition="all 0.3s"
+                />
+              </HStack>
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div
+              variants={fadeInUp}
+              initial="initial"
+              animate="animate"
+              transition={{ duration: 0.3, delay: 0.8 }}
+            >
+              <HStack spacing={4} flexWrap="wrap" justify="center">
+                <Button
+                  size="lg"
+                  bg="white"
+                  color="purple.600"
+                  _hover={{
+                    transform: "translateY(-4px)",
+                    boxShadow: "xl",
+                    bg: "whiteAlpha.900",
+                  }}
+                  onClick={() => scrollToSection('projects')}
+                  transition="all 0.3s"
+                  fontWeight="bold"
+                >
+                  Personal Projects
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  borderColor="white"
+                  color="white"
+                  _hover={{
+                    bg: "whiteAlpha.200",
+                    transform: "translateY(-4px)",
+                    boxShadow: "xl",
+                  }}
+                  onClick={() => scrollToSection('about')}
+                  transition="all 0.3s"
+                  fontWeight="bold"
+                >
+                  Work Experience
+                </Button>
+              </HStack>
             </motion.div>
           </VStack>
         </Container>

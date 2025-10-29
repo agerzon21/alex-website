@@ -31,6 +31,8 @@ interface ProjectModalProps {
     github?: string;
     live: string;
     isPrivate?: boolean;
+    images?: string[];
+    isMobile?: boolean;
     stats?: {
       performance?: string;
       features?: string[];
@@ -168,129 +170,174 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
             </VStack>
 
             <VStack spacing={4} align="stretch">
-              <Box position="relative" h="300px" borderRadius="lg" overflow="hidden">
-                <Image
-                  src={project.title === 'Vero Photography' 
-                    ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730845/screenshot-main_x8eg1w.png'
-                    : project.title === 'GrumpyShib'
-                    ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736106/screenshot-main_qfqdih.png'
-                    : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-main.png`}
-                  alt={`${project.title} screenshot`}
-                  objectFit="cover"
-                  w="100%"
-                  h="100%"
-                  loading="eager"
-                  transition="all 0.3s ease-in-out"
-                  style={{
-                    filter: 'blur(0px)',
-                  }}
-                  _loading={{
-                    opacity: 0.7,
-                    style: {
-                      filter: 'blur(10px)',
-                    }
-                  }}
-                  fallback={
-                    <Box
+              {project.isMobile ? (
+                // Mobile layout: 4 equal vertical screenshots in a 2x2 grid
+                <>
+                  <SimpleGrid columns={2} spacing={3}>
+                    {project.images?.slice(0, 4).map((img, idx) => (
+                      <Box 
+                        key={idx}
+                        position="relative" 
+                        h="280px" 
+                        borderRadius="lg" 
+                        overflow="hidden"
+                        bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        p={2}
+                      >
+                        <Image
+                          src={img}
+                          alt={`${project.title} screenshot ${idx + 1}`}
+                          objectFit="contain"
+                          maxH="100%"
+                          maxW="100%"
+                          loading={idx === 0 ? "eager" : "lazy"}
+                          borderRadius="md"
+                        />
+                      </Box>
+                    ))}
+                  </SimpleGrid>
+                  <Button
+                    as={Link}
+                    href={project.live}
+                    isExternal
+                    colorScheme="blue"
+                    size="lg"
+                    rightIcon={<FaExternalLinkAlt />}
+                  >
+                    Visit Website
+                  </Button>
+                </>
+              ) : (
+                // Desktop layout: 1 large + 2 small
+                <>
+                  <Box position="relative" h="300px" borderRadius="lg" overflow="hidden" bg="gray.100">
+                    <Image
+                      src={project.images?.[0] || (project.title === 'Vero Photography' 
+                        ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730845/screenshot-main_x8eg1w.png'
+                        : project.title === 'GrumpyShib'
+                        ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736106/screenshot-main_qfqdih.png'
+                        : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-main.png`)}
+                      alt={`${project.title} screenshot`}
+                      objectFit="cover"
                       w="100%"
-                      h="300px"
-                      bg="gray.100"
-                      borderRadius="lg"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Text color="gray.500">Loading image...</Text>
+                      h="100%"
+                      loading="eager"
+                      transition="all 0.3s ease-in-out"
+                      style={{
+                        filter: 'blur(0px)',
+                      }}
+                      _loading={{
+                        opacity: 0.7,
+                        style: {
+                          filter: 'blur(10px)',
+                        }
+                      }}
+                      fallback={
+                        <Box
+                          w="100%"
+                          h="300px"
+                          bg="gray.100"
+                          borderRadius="lg"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                        >
+                          <Text color="gray.500">Loading image...</Text>
+                        </Box>
+                      }
+                    />
+                  </Box>
+                  <SimpleGrid columns={2} spacing={4}>
+                    <Box position="relative" h="150px" borderRadius="lg" overflow="hidden" bg="gray.100">
+                      <Image
+                        src={project.images?.[1] || (project.title === 'Vero Photography'
+                          ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730840/screenshot-1_ek1hhn.png'
+                          : project.title === 'GrumpyShib'
+                          ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736106/screenshot-1_aaacjv.png'
+                          : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-1.png`)}
+                        alt={`${project.title} screenshot 1`}
+                        objectFit="cover"
+                        w="100%"
+                        h="100%"
+                        loading="lazy"
+                        transition="all 0.3s ease-in-out"
+                        style={{
+                          filter: 'blur(0px)',
+                        }}
+                        _loading={{
+                          opacity: 0.7,
+                          style: {
+                            filter: 'blur(10px)',
+                          }
+                        }}
+                        fallback={
+                          <Box
+                            w="100%"
+                            h="150px"
+                            bg="gray.100"
+                            borderRadius="lg"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Text color="gray.500">Loading image...</Text>
+                          </Box>
+                        }
+                      />
                     </Box>
-                  }
-                />
-              </Box>
-              <SimpleGrid columns={2} spacing={4}>
-                <Box position="relative" h="150px" borderRadius="lg" overflow="hidden">
-                  <Image
-                    src={project.title === 'Vero Photography'
-                      ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730840/screenshot-1_ek1hhn.png'
-                      : project.title === 'GrumpyShib'
-                      ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736106/screenshot-1_aaacjv.png'
-                      : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-1.png`}
-                    alt={`${project.title} screenshot 1`}
-                    objectFit="cover"
-                    w="100%"
-                    h="100%"
-                    loading="lazy"
-                    transition="all 0.3s ease-in-out"
-                    style={{
-                      filter: 'blur(0px)',
-                    }}
-                    _loading={{
-                      opacity: 0.7,
-                      style: {
-                        filter: 'blur(10px)',
-                      }
-                    }}
-                    fallback={
-                      <Box
+                    <Box position="relative" h="150px" borderRadius="lg" overflow="hidden" bg="gray.100">
+                      <Image
+                        src={project.images?.[2] || (project.title === 'Vero Photography'
+                          ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730840/screenshot-2_erbqrm.png'
+                          : project.title === 'GrumpyShib'
+                          ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736106/screenshot-2_xooeut.png'
+                          : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-2.png`)}
+                        alt={`${project.title} screenshot 2`}
+                        objectFit="cover"
                         w="100%"
-                        h="150px"
-                        bg="gray.100"
-                        borderRadius="lg"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Text color="gray.500">Loading image...</Text>
-                      </Box>
-                    }
-                  />
-                </Box>
-                <Box position="relative" h="150px" borderRadius="lg" overflow="hidden">
-                  <Image
-                    src={project.title === 'Vero Photography'
-                      ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730840/screenshot-2_erbqrm.png'
-                      : project.title === 'GrumpyShib'
-                      ? 'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736106/screenshot-2_xooeut.png'
-                      : `/projects/${project.title.toLowerCase().replace(/\s+/g, '-')}/optimized/screenshot-2.png`}
-                    alt={`${project.title} screenshot 2`}
-                    objectFit="cover"
-                    w="100%"
-                    h="100%"
-                    loading="lazy"
-                    transition="all 0.3s ease-in-out"
-                    style={{
-                      filter: 'blur(0px)',
-                    }}
-                    _loading={{
-                      opacity: 0.7,
-                      style: {
-                        filter: 'blur(10px)',
-                      }
-                    }}
-                    fallback={
-                      <Box
-                        w="100%"
-                        h="150px"
-                        bg="gray.100"
-                        borderRadius="lg"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Text color="gray.500">Loading image...</Text>
-                      </Box>
-                    }
-                  />
-                </Box>
-              </SimpleGrid>
-              <Button
-                as={Link}
-                href={project.live}
-                isExternal
-                colorScheme="blue"
-                size="lg"
-                rightIcon={<FaExternalLinkAlt />}
-              >
-                Visit Website
-              </Button>
+                        h="100%"
+                        loading="lazy"
+                        transition="all 0.3s ease-in-out"
+                        style={{
+                          filter: 'blur(0px)',
+                        }}
+                        _loading={{
+                          opacity: 0.7,
+                          style: {
+                            filter: 'blur(10px)',
+                          }
+                        }}
+                        fallback={
+                          <Box
+                            w="100%"
+                            h="150px"
+                            bg="gray.100"
+                            borderRadius="lg"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Text color="gray.500">Loading image...</Text>
+                          </Box>
+                        }
+                      />
+                    </Box>
+                  </SimpleGrid>
+                  <Button
+                    as={Link}
+                    href={project.live}
+                    isExternal
+                    colorScheme="blue"
+                    size="lg"
+                    rightIcon={<FaExternalLinkAlt />}
+                  >
+                    Visit Website
+                  </Button>
+                </>
+              )}
             </VStack>
           </SimpleGrid>
         </ModalBody>
