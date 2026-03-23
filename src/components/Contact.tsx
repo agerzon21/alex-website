@@ -1,100 +1,155 @@
-import { Box, Container, Heading, Icon, Link, Text, useColorModeValue, VStack, SimpleGrid } from '@chakra-ui/react';
+import { Box, Container, Heading, Icon, Link, Text, HStack, Flex, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaEnvelope, FaArrowRight } from 'react-icons/fa';
 
 const MotionBox = motion(Box);
 
 const Contact = () => {
-  const textColor = useColorModeValue('gray.600', 'gray.400');
-
-  const socialLinks = [
-    { icon: FaGithub, href: 'https://github.com/agerzon21', label: 'GitHub', color: 'gray.700' },
-    { icon: FaLinkedin, href: 'https://linkedin.com/in/gerzon', label: 'LinkedIn', color: 'blue.600' },
-    { icon: FaEnvelope, href: 'mailto:alex@gerz.dev', label: 'Email', color: 'red.500' },
-  ];
-
   return (
-    <Box id="contact" py={20} bg={useColorModeValue('gray.50', 'gray.900')}>
-      <Container maxW="container.xl">
-        <VStack spacing={12}>
-          {/* Header */}
-          <MotionBox
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
+    <Box id="contact" py={20} bg="gray.900">
+      <Container maxW="container.lg">
+        <MotionBox
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          {/* CTA Card */}
+          <Box
+            bg="gray.800"
+            borderRadius="2xl"
+            px={{ base: 6, md: 12 }}
+            py={{ base: 10, md: 14 }}
+            position="relative"
+            overflow="hidden"
             textAlign="center"
           >
-            <Heading size="2xl" mb={4}>
-              Get in Touch
-            </Heading>
-            <Text fontSize="xl" color={textColor} maxW="700px">
-              I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
-            </Text>
-          </MotionBox>
-
-          {/* Social Links Grid */}
-          <MotionBox
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
-            w="100%"
-            maxW="700px"
-          >
+            {/* Subtle gradient accent */}
             <Box
-              bg={useColorModeValue('white', 'gray.800')}
-              p={10}
-              borderRadius="2xl"
-              boxShadow="xl"
-            >
-              <SimpleGrid columns={3} spacing={8}>
-                {socialLinks.map((social, index) => (
-                  <MotionBox
-                    key={social.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                    viewport={{ once: true }}
+              position="absolute"
+              top="-40%"
+              left="50%"
+              transform="translateX(-50%)"
+              w="500px"
+              h="400px"
+              borderRadius="full"
+              bg="blue.500"
+              opacity={0.05}
+              filter="blur(80px)"
+            />
+
+            <VStack spacing={5} position="relative" zIndex={1}>
+              <Heading
+                size="xl"
+                color="white"
+                fontWeight="600"
+                letterSpacing="-0.02em"
+              >
+                Let's work together
+              </Heading>
+              <Text
+                fontSize="md"
+                color="whiteAlpha.600"
+                maxW="450px"
+                lineHeight="1.7"
+              >
+                Open to discussing new projects, creative ideas, or opportunities.
+              </Text>
+
+              <Flex
+                gap={3}
+                pt={4}
+                flexWrap="wrap"
+                justify="center"
+              >
+                <Link
+                  href="mailto:alex@gerz.dev"
+                  _hover={{ textDecoration: 'none' }}
+                >
+                  <HStack
+                    spacing={2}
+                    color="whiteAlpha.700"
+                    transition="all 0.2s"
+                    _hover={{ color: 'white', bg: 'whiteAlpha.200' }}
+                    bg="whiteAlpha.100"
+                    px={5}
+                    py={3}
+                    borderRadius="lg"
                   >
-                    <Link
-                      href={social.href}
-                      isExternal
-                      _hover={{ textDecoration: 'none' }}
-                    >
-                      <VStack
-                        spacing={3}
-                        p={4}
-                        borderRadius="lg"
-                        transition="all 0.3s"
-                        _hover={{ 
-                          transform: 'translateY(-8px)',
-                          bg: useColorModeValue('gray.50', 'gray.700')
-                        }}
-                      >
-                        <Icon
-                          as={social.icon}
-                          boxSize={12}
-                          color={social.color}
-                        />
-                        <Text 
-                          fontSize="md" 
-                          fontWeight="semibold"
-                          color={textColor}
-                        >
-                          {social.label}
-                        </Text>
-                      </VStack>
-                    </Link>
-                  </MotionBox>
-                ))}
-              </SimpleGrid>
-            </Box>
-          </MotionBox>
-        </VStack>
+                    <Icon as={FaEnvelope} boxSize={4} />
+                    <Text fontSize="sm" fontWeight="500">alex@gerz.dev</Text>
+                    <Icon as={FaArrowRight} boxSize={3} opacity={0.5} />
+                  </HStack>
+                </Link>
+                <Link
+                  href="https://linkedin.com/in/gerzon"
+                  isExternal
+                  _hover={{ textDecoration: 'none' }}
+                >
+                  <HStack
+                    spacing={2}
+                    color="whiteAlpha.700"
+                    transition="all 0.2s"
+                    _hover={{ color: 'white', bg: 'whiteAlpha.200' }}
+                    bg="whiteAlpha.100"
+                    px={5}
+                    py={3}
+                    borderRadius="lg"
+                  >
+                    <Icon as={FaLinkedin} boxSize={4} />
+                    <Text fontSize="sm" fontWeight="500">LinkedIn</Text>
+                  </HStack>
+                </Link>
+                <Link
+                  href="https://github.com/agerzon21"
+                  isExternal
+                  _hover={{ textDecoration: 'none' }}
+                >
+                  <HStack
+                    spacing={2}
+                    color="whiteAlpha.700"
+                    transition="all 0.2s"
+                    _hover={{ color: 'white', bg: 'whiteAlpha.200' }}
+                    bg="whiteAlpha.100"
+                    px={5}
+                    py={3}
+                    borderRadius="lg"
+                  >
+                    <Icon as={FaGithub} boxSize={4} />
+                    <Text fontSize="sm" fontWeight="500">GitHub</Text>
+                  </HStack>
+                </Link>
+              </Flex>
+            </VStack>
+          </Box>
+        </MotionBox>
+
+        {/* Footer */}
+        <Flex
+          mt={12}
+          pt={6}
+          borderTop="1px solid"
+          borderColor="whiteAlpha.100"
+          justify="space-between"
+          align="center"
+          flexWrap="wrap"
+          gap={3}
+        >
+          <Text fontSize="xs" color="whiteAlpha.400">
+            &copy; {new Date().getFullYear()} Alex Gerzon
+          </Text>
+          <HStack spacing={4}>
+            <Link href="https://github.com/agerzon21" isExternal>
+              <Icon as={FaGithub} boxSize={4} color="whiteAlpha.300" _hover={{ color: 'whiteAlpha.600' }} transition="all 0.2s" />
+            </Link>
+            <Link href="https://linkedin.com/in/gerzon" isExternal>
+              <Icon as={FaLinkedin} boxSize={4} color="whiteAlpha.300" _hover={{ color: 'whiteAlpha.600' }} transition="all 0.2s" />
+            </Link>
+          </HStack>
+        </Flex>
       </Container>
     </Box>
   );
 };
 
-export default Contact; 
+export default Contact;
