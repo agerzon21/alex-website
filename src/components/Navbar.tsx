@@ -7,8 +7,8 @@ const Navbar: React.FC = () => {
   const [isCompact] = useMediaQuery('(max-width: 1024px)');
   const [isLoaded, setIsLoaded] = useState(false);
   const bgColor = useColorModeValue(
-    'rgba(255, 255, 255, 0.85)',
-    'rgba(26, 32, 44, 0.85)'
+    'rgba(255, 255, 255, 0.9)',
+    'rgba(26, 32, 44, 0.9)'
   );
 
   // Store the initial scroll position
@@ -83,7 +83,7 @@ const Navbar: React.FC = () => {
         bg={isMenuOpen ? 'black' : bgColor}
         transition="background-color 0.3s ease"
         backdropFilter="blur(6px)"
-        boxShadow="0 2px 6px rgba(0,0,0,0.18)"
+        boxShadow="0 1px 3px rgba(0,0,0,0.08)"
         visibility={isLoaded ? 'visible' : 'hidden'}
       >
         <Flex

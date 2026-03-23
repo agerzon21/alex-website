@@ -1,4 +1,4 @@
-import { Box, Container, SimpleGrid, Heading, Image, Text, useColorModeValue, VStack, Skeleton, Flex, Tag } from '@chakra-ui/react';
+import { Box, Container, SimpleGrid, Heading, Image, Text, useColorModeValue, VStack, Skeleton, Flex, Tag, HStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import ProjectModal from './ProjectModal';
 import { useState, useEffect } from 'react';
@@ -16,6 +16,9 @@ interface Project {
   hasCarousel?: boolean;
   isPrivate?: boolean;
   isMobile?: boolean;
+  previewStyle?: 'mobile' | 'carousel' | 'static' | 'dashboard';
+  previewBg?: string;
+  logoSrc?: string;
   stats?: {
     performance?: string;
     features?: string[];
@@ -25,9 +28,28 @@ interface Project {
 
 const projects: Project[] = [
   {
+    title: 'DuoTrackr',
+    description: 'A Duolingo community growth automation platform with smart follow management, analytics dashboards, task scheduling, and AI-powered social engagement. Includes a web dashboard built with Next.js and a Discord bot backend for automated task execution.',
+    tech: ['Next.js', 'TypeScript', 'Supabase', 'Python', 'Discord.py', 'Tailwind CSS'],
+    github: 'https://github.com/agerzon21/duotrackr-web',
+    live: 'https://duotrackr.com',
+    images: [
+      '/projects/duotrackr/logo-full.png'
+    ],
+    previewStyle: 'dashboard',
+    previewBg: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+    logoSrc: '/projects/duotrackr/logo-full.png',
+    isPrivate: false,
+    stats: {
+      performance: 'Real-time Analytics',
+      features: ['Smart Follow System', 'Task Scheduler', 'AI Auto-Comments', 'Discord Integration'],
+      impact: 'Full-stack automation platform'
+    }
+  },
+  {
     title: 'SpySocial',
-    description: 'The ultimate spy party game where everyone plays on their own device! A thrilling multiplayer social deduction game where players identify spies among them using real-time voting, private rooms, and customizable settings. Built with React Native and Supabase.',
-    tech: ['React Native', 'React', 'Javascript/Typescript', 'PLpgSQL', 'Supabase'],
+    description: 'The ultimate spy party game where everyone plays on their own device. A multiplayer social deduction game with real-time voting, private rooms, and customizable settings.',
+    tech: ['React Native', 'TypeScript', 'PLpgSQL', 'Supabase'],
     github: 'https://github.com/agerzon21/spy-social-website',
     live: 'https://spysocial.app',
     images: [
@@ -36,7 +58,7 @@ const projects: Project[] = [
       '/projects/spysocial/3.JPG',
       '/projects/spysocial/4.JPG'
     ],
-    hasCarousel: false,
+    previewStyle: 'mobile',
     isPrivate: false,
     isMobile: true,
     stats: {
@@ -47,7 +69,7 @@ const projects: Project[] = [
   },
   {
     title: 'Vero Photography',
-    description: 'A professional photography portfolio website showcasing stunning visual work through an elegant, minimalist design. Features dynamic image galleries, smooth animations, responsive layouts optimized for all devices, and an intuitive contact system. Built with modern web technologies to deliver a fast, accessible, and visually captivating experience for clients and visitors.',
+    description: 'A professional photography portfolio with dynamic image galleries, smooth animations, and responsive layouts. Built for fast, accessible, and visually captivating client experiences.',
     tech: ['React', 'TypeScript', 'Chakra UI'],
     github: 'https://github.com/agerzon21/veronica-website',
     live: 'https://vero.photography',
@@ -58,6 +80,7 @@ const projects: Project[] = [
       'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730843/3_cdss5x.png',
       'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744730844/4_dybpxq.png'
     ],
+    previewStyle: 'carousel',
     hasCarousel: true,
     isPrivate: false,
     stats: {
@@ -68,12 +91,13 @@ const projects: Project[] = [
   },
   {
     title: 'GrumpyShib',
-    description: 'Co-led development of the world\'s first altruism cryptocurrency platform, utilizing blockchain technology to support decentralized fundraising initiatives. Managed cloud infrastructure to ensure scalability and security.',
-    tech: ['React', 'TypeScript', 'Chakra UI', 'Blockchain', 'Cloud Infrastructure'],
+    description: 'Co-led development of an altruism cryptocurrency platform using blockchain technology to support decentralized fundraising initiatives. Managed cloud infrastructure for scalability and security.',
+    tech: ['React', 'TypeScript', 'Chakra UI', 'Blockchain'],
     live: 'https://grumpyshib.com',
     images: [
       'https://res.cloudinary.com/dmi9nfhqa/image/upload/v1744736107/main_qtzsd3.png'
     ],
+    previewStyle: 'static',
     hasCarousel: false,
     isPrivate: true,
     stats: {
@@ -84,21 +108,318 @@ const projects: Project[] = [
   }
 ];
 
+/* ─── Browser Window Frame ─── */
+const BrowserFrame = ({ children, url }: { children: React.ReactNode; url?: string }) => (
+  <Box
+    borderRadius="lg"
+    overflow="hidden"
+    boxShadow="0 8px 32px rgba(0,0,0,0.12)"
+    bg="gray.800"
+  >
+    {/* Title bar */}
+    <Flex align="center" px={3} py={2} bg="gray.750" borderBottom="1px solid" borderColor="gray.700">
+      <HStack spacing={1.5}>
+        <Box w="10px" h="10px" borderRadius="full" bg="red.400" />
+        <Box w="10px" h="10px" borderRadius="full" bg="yellow.400" />
+        <Box w="10px" h="10px" borderRadius="full" bg="green.400" />
+      </HStack>
+      {url && (
+        <Box
+          mx={3}
+          flex="1"
+          bg="gray.700"
+          borderRadius="md"
+          px={3}
+          py={0.5}
+        >
+          <Text fontSize="10px" color="gray.400" fontFamily="mono" isTruncated>
+            {url}
+          </Text>
+        </Box>
+      )}
+    </Flex>
+    {/* Content */}
+    <Box position="relative" overflow="hidden">
+      {children}
+    </Box>
+  </Box>
+);
+
+/* ─── Phone Frame ─── */
+const PhoneFrame = ({ children }: { children: React.ReactNode }) => (
+  <Box
+    bg="gray.900"
+    borderRadius="24px"
+    p="6px"
+    boxShadow="0 8px 24px rgba(0,0,0,0.25)"
+    position="relative"
+  >
+    {/* Notch */}
+    <Box
+      position="absolute"
+      top="6px"
+      left="50%"
+      transform="translateX(-50%)"
+      w="40px"
+      h="4px"
+      bg="gray.700"
+      borderRadius="full"
+      zIndex={3}
+    />
+    <Box
+      w="75px"
+      h="155px"
+      bg="white"
+      borderRadius="20px"
+      overflow="hidden"
+      position="relative"
+    >
+      {children}
+    </Box>
+  </Box>
+);
+
+/* ─── Dashboard Preview (DuoTrackr) ─── */
+const DashboardPreview = ({ project }: { project: Project }) => {
+  return (
+    <Box h="240px" position="relative" overflow="hidden">
+      <BrowserFrame url="duotrackr.com/dashboard">
+        <Box
+          h="200px"
+          bg={project.previewBg || 'gray.900'}
+          position="relative"
+          overflow="hidden"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          {/* Animated dashboard-like background elements */}
+          <Box position="absolute" top="0" left="0" right="0" bottom="0" opacity={0.15}>
+            {/* Grid lines */}
+            {[...Array(6)].map((_, i) => (
+              <Box
+                key={`h-${i}`}
+                position="absolute"
+                left="0"
+                right="0"
+                top={`${(i + 1) * 16}%`}
+                h="1px"
+                bg="blue.400"
+                opacity={0.3}
+              />
+            ))}
+            {[...Array(8)].map((_, i) => (
+              <Box
+                key={`v-${i}`}
+                position="absolute"
+                top="0"
+                bottom="0"
+                left={`${(i + 1) * 12}%`}
+                w="1px"
+                bg="blue.400"
+                opacity={0.3}
+              />
+            ))}
+          </Box>
+
+          {/* Animated chart line */}
+          <MotionBox
+            position="absolute"
+            bottom="20%"
+            left="8%"
+            right="8%"
+            h="40%"
+            opacity={0.2}
+          >
+            <svg width="100%" height="100%" viewBox="0 0 300 100" preserveAspectRatio="none">
+              <motion.path
+                d="M 0 80 Q 30 60 60 65 T 120 40 T 180 50 T 240 25 T 300 15"
+                fill="none"
+                stroke="#60a5fa"
+                strokeWidth="2"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, ease: "easeInOut" }}
+              />
+              <motion.path
+                d="M 0 90 Q 30 75 60 78 T 120 55 T 180 60 T 240 40 T 300 30"
+                fill="none"
+                stroke="#34d399"
+                strokeWidth="1.5"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 3, delay: 0.5, repeat: Infinity, repeatDelay: 2, ease: "easeInOut" }}
+              />
+            </svg>
+          </MotionBox>
+
+          {/* Floating stat cards */}
+          <MotionBox
+            position="absolute"
+            top="12%"
+            left="6%"
+            bg="whiteAlpha.100"
+            borderRadius="md"
+            px={3}
+            py={2}
+            backdropFilter="blur(8px)"
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            display={{ base: "none", sm: "block" }}
+          >
+            <Text fontSize="8px" color="gray.400" fontFamily="mono">followers</Text>
+            <Text fontSize="14px" color="green.400" fontWeight="bold" fontFamily="mono">+247</Text>
+          </MotionBox>
+
+          <MotionBox
+            position="absolute"
+            top="12%"
+            right="6%"
+            bg="whiteAlpha.100"
+            borderRadius="md"
+            px={3}
+            py={2}
+            backdropFilter="blur(8px)"
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 4, delay: 1, repeat: Infinity, ease: "easeInOut" }}
+            display={{ base: "none", sm: "block" }}
+          >
+            <Text fontSize="8px" color="gray.400" fontFamily="mono">tasks</Text>
+            <Text fontSize="14px" color="blue.400" fontWeight="bold" fontFamily="mono">12 active</Text>
+          </MotionBox>
+
+          {/* Logo */}
+          <MotionBox
+            zIndex={2}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Image
+              src={project.logoSrc || project.images[0]}
+              alt={`${project.title} logo`}
+              maxH="40px"
+              maxW="180px"
+              objectFit="contain"
+              filter="drop-shadow(0 2px 8px rgba(0,0,0,0.4))"
+            />
+          </MotionBox>
+        </Box>
+      </BrowserFrame>
+    </Box>
+  );
+};
+
+/* ─── Mobile Preview (SpySocial) ─── */
+const MobilePhonePreview = ({ project }: { project: Project }) => {
+  const [phoneOneIndex, setPhoneOneIndex] = useState(0);
+  const [phoneTwoIndex, setPhoneTwoIndex] = useState(1);
+
+  useEffect(() => {
+    const timer1 = setInterval(() => {
+      setPhoneOneIndex((prev) => (prev + 2) % project.images.length);
+    }, 4000);
+    const timer2 = setInterval(() => {
+      setPhoneTwoIndex((prev) => {
+        const next = (prev + 2) % project.images.length;
+        return next === 0 ? 1 : next;
+      });
+    }, 4000);
+    return () => { clearInterval(timer1); clearInterval(timer2); };
+  }, [project.images.length]);
+
+  return (
+    <Box
+      h="240px"
+      bg="linear-gradient(145deg, #4c1d95 0%, #6d28d9 40%, #7c3aed 100%)"
+      position="relative"
+      overflow="hidden"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      gap={4}
+    >
+      {/* Subtle background glow */}
+      <Box
+        position="absolute"
+        w="200px"
+        h="200px"
+        borderRadius="full"
+        bg="whiteAlpha.100"
+        filter="blur(60px)"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+      />
+
+      {/* Phone 1 */}
+      <MotionBox
+        animate={{ y: [0, -5, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        zIndex={2}
+        transform="rotate(-4deg)"
+      >
+        <PhoneFrame>
+          {project.images.map((image, index) => (
+            <MotionImage
+              key={`p1-${image}`}
+              src={image}
+              alt={`${project.title} screenshot`}
+              objectFit="cover"
+              w="100%"
+              h="100%"
+              position="absolute"
+              top={0}
+              left={0}
+              animate={{ opacity: index === phoneOneIndex ? 1 : 0 }}
+              transition={{ duration: 0.6 }}
+            />
+          ))}
+        </PhoneFrame>
+      </MotionBox>
+
+      {/* Phone 2 */}
+      <MotionBox
+        animate={{ y: [0, -5, 0] }}
+        transition={{ duration: 5, delay: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        zIndex={1}
+        transform="rotate(4deg)"
+        ml={-3}
+      >
+        <PhoneFrame>
+          {project.images.map((image, index) => (
+            <MotionImage
+              key={`p2-${image}`}
+              src={image}
+              alt={`${project.title} screenshot`}
+              objectFit="cover"
+              w="100%"
+              h="100%"
+              position="absolute"
+              top={0}
+              left={0}
+              animate={{ opacity: index === phoneTwoIndex ? 1 : 0 }}
+              transition={{ duration: 0.6 }}
+            />
+          ))}
+        </PhoneFrame>
+      </MotionBox>
+    </Box>
+  );
+};
+
+/* ─── Carousel in Browser Frame (Vero Photography) ─── */
 const CarouselPreview = ({ project }: { project: Project }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (!isPaused) {
-      const timer = setInterval(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
-      }, 3000);
-
-      return () => clearInterval(timer);
-    }
-  }, [isPaused, project.images.length]);
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [project.images.length]);
 
   const handleImageLoad = (src: string) => {
     setLoadedImages(prev => {
@@ -112,442 +433,146 @@ const CarouselPreview = ({ project }: { project: Project }) => {
   };
 
   return (
-    <Box
-      h="200px"
-      bg="gray.100"
-      position="relative"
-      overflow="hidden"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      transition="all 0.3s"
-    >
-      {project.images.map((image, index) => (
-        <MotionImage
-          key={image}
-          src={image}
-          alt={`${project.title} preview ${index + 1}`}
-          objectFit="cover"
-          w="100%"
-          h="100%"
-          position="absolute"
-          top={0}
-          left={0}
-          initial={{ opacity: 0 }}
-          animate={{ 
-            opacity: index === currentImageIndex ? 1 : 0,
-            zIndex: index === currentImageIndex ? 1 : 0
-          }}
-          transition={{ 
-            duration: 0.8,
-            ease: "easeInOut",
-            opacity: { duration: 0.5 }
-          }}
-          onLoad={() => handleImageLoad(image)}
-          loading={index === 0 ? "eager" : "lazy"}
-          style={{
-            transform: 'scale(1)',
-            transition: 'transform 0.3s'
-          }}
-        />
-      ))}
-      {isLoading && (
-        <Skeleton
-          position="absolute"
-          top={0}
-          left={0}
-          w="100%"
-          h="100%"
-        />
-      )}
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        bg="linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.15))"
-      />
-    </Box>
-  );
-};
-
-const MobilePhonePreview = ({ project }: { project: Project }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
-    }, 4000);
-
-    return () => clearInterval(timer);
-  }, [project.images.length]);
-
-  return (
-    <Box
-      h="200px"
-      bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-      position="relative"
-      overflow="visible"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      transition="all 0.3s"
-    >
-      {/* Logo on the left */}
-      <MotionBox
-        position="absolute"
-        left="5%"
-        top="30%"
-        transform="translateY(-50%)"
-        animate={{
-          y: [-1.5, 1.5, -1.5],
-          rotate: [-1.5, 1.5, -1.5],
-        }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        opacity={0.9}
-      >
-        <Image
-          src="/projects/spysocial/logo.png"
-          alt="SpySocial Logo"
-          boxSize="100px"
-          objectFit="contain"
-          filter="drop-shadow(0 4px 12px rgba(0,0,0,0.3))"
-        />
-      </MotionBox>
-
-      {/* Floating Phone Mockup */}
-      <MotionBox
-        animate={{
-          y: [0, -10, 0],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        maxH="180px"
-        w="auto"
-        zIndex={2}
-      >
-        {/* Phone Bezel/Frame */}
-        <Box
-          position="relative"
-          bg="black"
-          borderRadius="20px"
-          p="8px"
-          boxShadow="0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1)"
-        >
-          {/* Screen */}
+    <Box h="240px" position="relative" overflow="hidden">
+      <BrowserFrame url="vero.photography">
+        <Box h="200px" bg="gray.100" position="relative" overflow="hidden">
+          {project.images.map((image, index) => (
+            <MotionImage
+              key={image}
+              src={image}
+              alt={`${project.title} preview ${index + 1}`}
+              objectFit="cover"
+              w="100%"
+              h="100%"
+              position="absolute"
+              top={0}
+              left={0}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: index === currentImageIndex ? 1 : 0,
+                scale: index === currentImageIndex ? 1 : 1.05,
+              }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              onLoad={() => handleImageLoad(image)}
+              loading={index === 0 ? "eager" : "lazy"}
+            />
+          ))}
+          {isLoading && (
+            <Skeleton position="absolute" top={0} left={0} w="100%" h="100%" />
+          )}
+          {/* Image counter */}
           <Box
-            position="relative"
-            w="90px"
-            h="180px"
-            bg="white"
-            borderRadius="14px"
-            overflow="hidden"
+            position="absolute"
+            bottom={2}
+            right={3}
+            bg="blackAlpha.600"
+            borderRadius="full"
+            px={2}
+            py={0.5}
           >
-            {/* Screenshots Carousel */}
-            {project.images.map((image, index) => (
-              <MotionImage
-                key={image}
-                src={image}
-                alt={`${project.title} screenshot ${index + 1}`}
-                objectFit="cover"
-                w="100%"
-                h="100%"
-                position="absolute"
-                top={0}
-                left={0}
-                initial={{ opacity: 0 }}
-                animate={{ 
-                  opacity: index === currentImageIndex ? 1 : 0,
-                }}
-                transition={{ 
-                  duration: 1,
-                  ease: "easeInOut"
-                }}
-              />
-            ))}
+            <Text fontSize="9px" color="white" fontWeight="500">
+              {currentImageIndex + 1} / {project.images.length}
+            </Text>
           </Box>
         </Box>
-      </MotionBox>
-
-      {/* Icon on the right */}
-      <MotionBox
-        position="absolute"
-        right="10%"
-        top="35%"
-        transform="translateY(-50%)"
-        animate={{
-          y: [1.5, -1.5, 1.5],
-          rotate: [1.5, -1.5, 1.5],
-        }}
-        transition={{
-          duration: 4.5,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        opacity={0.9}
-      >
-        <Image
-          src="/projects/spysocial/icon.png"
-          alt="SpySocial Icon"
-          boxSize="70px"
-          objectFit="contain"
-          borderRadius="12px"
-          filter="drop-shadow(0 4px 12px rgba(0,0,0,0.3))"
-        />
-      </MotionBox>
-
-      {/* Background Elements */}
-      <MotionBox
-        position="absolute"
-        top="50%"
-        left="50%"
-        w="150px"
-        h="150px"
-        borderRadius="full"
-        bg="whiteAlpha.200"
-        filter="blur(40px)"
-        animate={{
-          scale: [1, 1.2, 1],
-          rotate: [0, 180, 360],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-      />
+      </BrowserFrame>
     </Box>
   );
 };
 
+/* ─── Static in Browser Frame (GrumpyShib) ─── */
 const StaticPreview = ({ project }: { project: Project }) => {
   return (
-    <Box
-      h="200px"
-      position="relative"
-      overflow="hidden"
-      transition="all 0.3s"
-    >
-      {/* Base image */}
-      <Image
-        src={project.images[0]}
-        alt={`${project.title} preview`}
-        objectFit="cover"
-        w="100%"
-        h="100%"
-        style={{
-          transform: 'scale(1)',
-          transition: 'transform 0.3s'
-        }}
-      />
-      
-      {/* Main glitch effect */}
-      <MotionBox
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        animate={{
-          x: [0, -8, 8, -4, 0],
-          filter: [
-            'hue-rotate(0deg)',
-            'hue-rotate(-20deg) saturate(150%)',
-            'hue-rotate(15deg) saturate(200%)',
-            'hue-rotate(-10deg) saturate(125%)',
-            'hue-rotate(0deg)'
-          ]
-        }}
-        transition={{
-          duration: 0.5,
-          repeat: Infinity,
-          repeatDelay: 5,
-          times: [0, 0.2, 0.4, 0.6, 1]
-        }}
-        style={{
-          transform: 'scale(1)',
-          transition: 'transform 0.3s'
-        }}
-      >
-        <Image
-          src={project.images[0]}
-          alt=""
-          objectFit="cover"
-          w="100%"
-          h="100%"
-          style={{
-            transform: 'scale(1)',
-            transition: 'transform 0.3s'
-          }}
-        />
-      </MotionBox>
-
-      {/* Quick glitch overlay */}
-      <MotionBox
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        animate={{
-          opacity: [0, 0.8, 0],
-          x: [0, -15, 15, 0],
-          clipPath: [
-            'inset(0% 0% 0% 0%)',
-            'inset(20% -20% 30% 0%)',
-            'inset(50% 0% 20% 0%)',
-            'inset(0% 0% 0% 0%)'
-          ]
-        }}
-        transition={{
-          duration: 0.4,
-          repeat: Infinity,
-          repeatDelay: 5,
-          times: [0, 0.2, 0.4, 1]
-        }}
-      >
-        <Image
-          src={project.images[0]}
-          alt=""
-          objectFit="cover"
-          w="100%"
-          h="100%"
-          style={{
-            filter: 'hue-rotate(90deg) saturate(200%) brightness(1.2)'
-          }}
-        />
-      </MotionBox>
-
-      {/* Subtle scan line */}
-      <MotionBox
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        initial={{ scaleY: 0 }}
-        animate={{
-          scaleY: [0, 1],
-          opacity: [0, 0.03, 0],
-        }}
-        transition={{
-          duration: 1.5,
-          repeat: Infinity,
-          repeatDelay: 3
-        }}
-        style={{
-          background: 'linear-gradient(to bottom, transparent 0%, white 50%, transparent 100%)',
-          transformOrigin: 'top',
-        }}
-      />
-
-      {/* Overlay gradient */}
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        bg="linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.2))"
-      />
+    <Box h="240px" position="relative" overflow="hidden">
+      <BrowserFrame url="grumpyshib.com">
+        <Box h="200px" position="relative" overflow="hidden">
+          <Image
+            src={project.images[0]}
+            alt={`${project.title} preview`}
+            objectFit="cover"
+            w="100%"
+            h="100%"
+          />
+        </Box>
+      </BrowserFrame>
     </Box>
   );
 };
 
+/* ─── Project Card ─── */
 const ProjectPreview = (props: { project: Project }) => {
   const { project } = props;
   const bgColor = useColorModeValue('white', 'gray.800');
-  const textColor = useColorModeValue('gray.600', 'gray.300');
+  const textColor = useColorModeValue('gray.500', 'gray.300');
+  const borderColor = useColorModeValue('gray.100', 'gray.700');
 
   return (
     <MotionBox
       bg={bgColor}
-      rounded="lg"
-      shadow="md"
+      rounded="xl"
       overflow="hidden"
-      whileHover={{ 
-        y: -5,
-        scale: 1.02
-      }}
-      transition={{ duration: 0.2 }}
+      borderWidth="1px"
+      borderColor={borderColor}
+      whileHover={{ y: -6, boxShadow: '0 12px 40px rgba(0,0,0,0.1)' }}
+      transition={{ duration: 0.25 }}
       cursor="pointer"
       h="100%"
       display="flex"
       flexDirection="column"
-      style={{
-        willChange: 'transform',
-        transformOrigin: 'center center',
-        backfaceVisibility: 'hidden',
-        WebkitBackfaceVisibility: 'hidden'
-      }}
     >
-      <Box
-        overflow="hidden"
-        position="relative"
-        style={{
-          transform: 'translateZ(0)',
-          backfaceVisibility: 'hidden',
-          WebkitBackfaceVisibility: 'hidden'
-        }}
-      >
-        {project.isMobile ? (
-          <MobilePhonePreview project={project} />
-        ) : project.hasCarousel ? (
+      <Box overflow="hidden" position="relative" p={3} pb={0}>
+        {project.previewStyle === 'mobile' ? (
+          <Box borderRadius="lg" overflow="hidden">
+            <MobilePhonePreview project={project} />
+          </Box>
+        ) : project.previewStyle === 'carousel' ? (
           <CarouselPreview project={project} />
+        ) : project.previewStyle === 'dashboard' ? (
+          <DashboardPreview project={project} />
         ) : (
           <StaticPreview project={project} />
         )}
       </Box>
 
-      <Box 
-        p={6} 
-        flex="1" 
-        display="flex" 
+      <Box
+        p={5}
+        pt={4}
+        flex="1"
+        display="flex"
         flexDirection="column"
         bg={bgColor}
-        position="relative"
-        zIndex={1}
       >
-        <Box mb={4}>
+        <Box mb={3}>
           <Heading
-            fontSize={{ base: "lg", md: "xl" }}
-            mb={2}
-            display="flex"
-            alignItems="center"
-            gap={2}
+            fontSize="lg"
+            mb={1.5}
+            fontWeight="600"
           >
             {project.title}
           </Heading>
           <Text
-            fontSize={{ base: "sm", md: "md" }}
+            fontSize="sm"
             color={textColor}
-            mb={4}
-            noOfLines={{ base: 2, md: 3 }}
+            noOfLines={2}
+            lineHeight="1.6"
           >
             {project.description}
           </Text>
         </Box>
 
-        <Flex 
-          wrap="wrap" 
-          gap={2} 
+        <Flex
+          wrap="wrap"
+          gap={1.5}
           mt="auto"
-          mb={2}
         >
           {project.tech.map((tech, index) => (
             <Tag
               key={index}
               size="sm"
               variant="subtle"
-              colorScheme="blue"
-              fontSize={{ base: "xs", md: "sm" }}
+              colorScheme="gray"
+              fontSize="xs"
+              borderRadius="md"
             >
               {tech}
             </Tag>
@@ -558,48 +583,41 @@ const ProjectPreview = (props: { project: Project }) => {
   );
 };
 
+/* ─── Projects Section ─── */
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <Box 
-      id="projects" 
-      py={12} 
-      bg={useColorModeValue('gray.50', 'gray.900')}
-      position="relative"
-      zIndex={1}
+    <Box
+      id="projects"
+      py={20}
+      bg={useColorModeValue('white', 'gray.900')}
     >
-      <Container maxW="container.xl">
+      <Container maxW="container.lg">
         <VStack spacing={12} align="stretch">
           <MotionBox
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            textAlign="center"
           >
-            <Heading size="2xl" mb={4}>
-              Featured Projects
+            <Heading size="xl" mb={2} fontWeight="600" letterSpacing="-0.02em">
+              Projects
             </Heading>
-            <Text fontSize="xl" color="gray.600">
-              A selection of my recent work
+            <Text fontSize="md" color="gray.500">
+              Recent personal and side projects
             </Text>
           </MotionBox>
 
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
             {projects.map((project, index) => (
               <MotionBox
                 key={project.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
                 viewport={{ once: true }}
                 onClick={() => setSelectedProject(project)}
-                style={{
-                  transform: 'translateZ(0)',
-                  backfaceVisibility: 'hidden',
-                  WebkitBackfaceVisibility: 'hidden'
-                }}
               >
                 <ProjectPreview project={project} />
               </MotionBox>
@@ -617,4 +635,4 @@ const Projects = () => {
   );
 };
 
-export default Projects; 
+export default Projects;

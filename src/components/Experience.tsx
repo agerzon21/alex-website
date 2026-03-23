@@ -1,255 +1,274 @@
-import { Box, Container, Heading, Text, VStack, Image, useColorModeValue, Badge, Flex } from '@chakra-ui/react';
+import { Box, Container, Heading, Text, VStack, Image, useColorModeValue, Badge, Flex, HStack, Collapse } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { FaChevronDown } from 'react-icons/fa';
 
 const MotionBox = motion(Box);
 
-interface Experience {
-  company: string;
-  logo: string;
+interface Role {
   title: string;
-  location: string;
   startDate: string;
   endDate: string;
+  location: string;
 }
 
-// Function to calculate duration dynamically
+interface CompanyGroup {
+  company: string;
+  logo: string;
+  roles: Role[];
+}
+
 const calculateDuration = (startDate: string, endDate: string): string => {
   const start = new Date(startDate);
   const end = endDate === 'Present' ? new Date() : new Date(endDate);
-  
   const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-  
-  if (months < 1) {
-    return '< 1 mo';
-  }
-  
+  if (months < 1) return '< 1 mo';
   const years = Math.floor(months / 12);
   const remainingMonths = months % 12;
-  
-  if (years === 0) {
-    return `${months} mo${months > 1 ? 's' : ''}`;
-  } else if (remainingMonths === 0) {
-    return `${years} yr${years > 1 ? 's' : ''}`;
-  } else {
-    return `${years} yr${years > 1 ? 's' : ''} ${remainingMonths} mo${remainingMonths > 1 ? 's' : ''}`;
-  }
+  if (years === 0) return `${months} mo${months > 1 ? 's' : ''}`;
+  if (remainingMonths === 0) return `${years} yr${years > 1 ? 's' : ''}`;
+  return `${years} yr${years > 1 ? 's' : ''} ${remainingMonths} mo${remainingMonths > 1 ? 's' : ''}`;
 };
 
-const experiences: Experience[] = [
+const formatDate = (d: string) =>
+  d === 'Present' ? 'Present' : new Date(d).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+const companyGroups: CompanyGroup[] = [
   {
     company: 'SAP',
     logo: '/images/companies/sap.png',
-    title: 'Business Processes Consultant',
-    location: 'Remote',
-    startDate: 'Apr 1, 2025',
-    endDate: 'Present'
+    roles: [
+      { title: 'Business Processes Consultant', startDate: 'Apr 1, 2025', endDate: 'Present', location: 'Remote' },
+      { title: 'HCM Technical Consultant', startDate: 'Nov 1, 2021', endDate: 'Apr 1, 2025', location: 'Pittsburgh, PA' },
+    ]
   },
   {
-    company: 'SAP',
-    logo: '/images/companies/sap.png',
-    title: 'HCM Technical Consultant',
-    location: 'Pittsburgh, Pennsylvania',
-    startDate: 'Nov 1, 2021',
-    endDate: 'Apr 1, 2025'
-  },
-  {
-    company: 'OpticsPlanet, Inc.',
+    company: 'OpticsPlanet',
     logo: '/images/companies/optics.png',
-    title: 'Software Engineer',
-    location: 'Northbrook, Illinois',
-    startDate: 'Oct 1, 2019',
-    endDate: 'Dec 1, 2021'
-  },
-  {
-    company: 'OpticsPlanet, Inc.',
-    logo: '/images/companies/optics.png',
-    title: 'Junior Software Engineer',
-    location: 'Northbrook, Illinois',
-    startDate: 'Jun 1, 2018',
-    endDate: 'Oct 1, 2019'
+    roles: [
+      { title: 'Software Engineer', startDate: 'Oct 1, 2019', endDate: 'Dec 1, 2021', location: 'Northbrook, IL' },
+      { title: 'Junior Software Engineer', startDate: 'Jun 1, 2018', endDate: 'Oct 1, 2019', location: 'Northbrook, IL' },
+      { title: 'Business Technical Analyst', startDate: 'Jul 1, 2017', endDate: 'Oct 1, 2017', location: 'Northbrook, IL' },
+    ]
   },
   {
     company: 'Rutgers University',
     logo: '/images/companies/rutgers.png',
-    title: 'CS Teaching Assistant',
-    location: 'New Brunswick, New Jersey',
-    startDate: 'Sep 1, 2017',
-    endDate: 'May 1, 2018'
-  },
-  {
-    company: 'OpticsPlanet, Inc.',
-    logo: '/images/companies/optics.png',
-    title: 'Business Technical Analyst',
-    location: 'Northbrook, Illinois',
-    startDate: 'Jul 1, 2017',
-    endDate: 'Oct 1, 2017'
+    roles: [
+      { title: 'CS Teaching Assistant', startDate: 'Sep 1, 2017', endDate: 'May 1, 2018', location: 'New Brunswick, NJ' },
+    ]
   },
   {
     company: 'PVH Corp.',
     logo: '/images/companies/pvh.png',
-    title: 'Intern (IT, Corporate Systems)',
-    location: 'Bridgewater, New Jersey',
-    startDate: 'Jun 1, 2016',
-    endDate: 'Sep 1, 2016'
+    roles: [
+      { title: 'Intern (IT, Corporate Systems)', startDate: 'Jun 1, 2016', endDate: 'Sep 1, 2016', location: 'Bridgewater, NJ' },
+    ]
   }
 ];
 
-const Experience = () => {
+const CompanyCard = ({ group, index, isInitiallyOpen }: { group: CompanyGroup; index: number; isInitiallyOpen: boolean }) => {
+  const [isOpen, setIsOpen] = useState(isInitiallyOpen);
   const bgColor = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
-  const textColor = useColorModeValue('gray.600', 'gray.400');
-  const timelineColor = useColorModeValue('blue.500', 'blue.400');
+  const borderColor = useColorModeValue('gray.100', 'gray.700');
+  const textColor = useColorModeValue('gray.500', 'gray.400');
+  const isCurrentJob = group.roles[0].endDate === 'Present';
+
+  const totalStart = group.roles[group.roles.length - 1].startDate;
+  const totalEnd = group.roles[0].endDate;
+  const totalDuration = calculateDuration(totalStart, totalEnd);
+
+  return (
+    <MotionBox
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
+      viewport={{ once: true }}
+    >
+      <Box
+        bg={bgColor}
+        borderRadius="xl"
+        borderWidth="1px"
+        borderColor={borderColor}
+        overflow="hidden"
+        transition="all 0.2s"
+        _hover={{ borderColor: useColorModeValue('gray.200', 'gray.600') }}
+      >
+        {/* Company header — always visible, clickable */}
+        <Flex
+          align="center"
+          px={{ base: 4, md: 5 }}
+          py={4}
+          cursor="pointer"
+          onClick={() => setIsOpen(!isOpen)}
+          userSelect="none"
+          gap={3}
+        >
+          {/* Logo */}
+          <Box
+            flexShrink={0}
+            w="40px"
+            h="40px"
+            borderRadius="lg"
+            bg={useColorModeValue('gray.50', 'gray.700')}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            p="6px"
+          >
+            <Image
+              src={group.logo}
+              alt={`${group.company} logo`}
+              objectFit="contain"
+              w="100%"
+              h="100%"
+            />
+          </Box>
+
+          {/* Company info */}
+          <Box flex="1" minW={0}>
+            <Flex align="center" gap={2} flexWrap="wrap">
+              <Text fontWeight="600" fontSize={{ base: "sm", md: "md" }}>
+                {group.company}
+              </Text>
+              {isCurrentJob && (
+                <Badge
+                  colorScheme="green"
+                  variant="subtle"
+                  fontSize="10px"
+                  px={1.5}
+                  py={0}
+                  borderRadius="sm"
+                >
+                  Current
+                </Badge>
+              )}
+            </Flex>
+            <HStack spacing={2} mt={0.5} flexWrap="wrap">
+              <Text fontSize="xs" color={textColor}>
+                {totalDuration}
+              </Text>
+              <Text fontSize="xs" color={textColor} opacity={0.5}>·</Text>
+              <Text fontSize="xs" color={textColor}>
+                {group.roles.length} role{group.roles.length > 1 ? 's' : ''}
+              </Text>
+              <Text fontSize="xs" color={textColor} opacity={0.5}>·</Text>
+              <Text fontSize="xs" color={textColor}>
+                {formatDate(totalStart)} – {formatDate(totalEnd)}
+              </Text>
+            </HStack>
+          </Box>
+
+          {/* Expand icon */}
+          <Box
+            as={FaChevronDown}
+            size="12px"
+            color={textColor}
+            transition="transform 0.2s"
+            transform={isOpen ? 'rotate(180deg)' : 'rotate(0deg)'}
+            flexShrink={0}
+          />
+        </Flex>
+
+        {/* Expanded roles */}
+        <Collapse in={isOpen} animateOpacity>
+          <Box
+            px={{ base: 4, md: 5 }}
+            pb={4}
+            pt={0}
+          >
+            <Box
+              borderTop="1px solid"
+              borderColor={borderColor}
+              pt={3}
+            >
+              <VStack spacing={3} align="stretch">
+                {group.roles.map((role, roleIdx) => (
+                  <Flex
+                    key={`${role.title}-${role.startDate}`}
+                    align="start"
+                    gap={3}
+                    pl={1}
+                  >
+                    {/* Role dot + connector */}
+                    <VStack spacing={0} pt={1.5} align="center" flexShrink={0}>
+                      <Box
+                        w="8px"
+                        h="8px"
+                        borderRadius="full"
+                        bg={roleIdx === 0 && isCurrentJob ? 'green.400' : useColorModeValue('gray.300', 'gray.600')}
+                        flexShrink={0}
+                      />
+                      {roleIdx < group.roles.length - 1 && (
+                        <Box w="1px" h="28px" bg={useColorModeValue('gray.200', 'gray.700')} />
+                      )}
+                    </VStack>
+
+                    {/* Role info */}
+                    <Box pb={roleIdx < group.roles.length - 1 ? 1 : 0}>
+                      <Text fontWeight="500" fontSize={{ base: "sm", md: "sm" }}>
+                        {role.title}
+                      </Text>
+                      <HStack spacing={2} mt={0.5} flexWrap="wrap">
+                        <Text fontSize="xs" color={textColor}>
+                          {role.location}
+                        </Text>
+                        <Text fontSize="xs" color={textColor} opacity={0.5}>·</Text>
+                        <Text fontSize="xs" color={textColor}>
+                          {formatDate(role.startDate)} – {formatDate(role.endDate)}
+                        </Text>
+                        <Text fontSize="xs" color={textColor} opacity={0.5}>·</Text>
+                        <Text fontSize="xs" color={textColor} fontWeight="500">
+                          {calculateDuration(role.startDate, role.endDate)}
+                        </Text>
+                      </HStack>
+                    </Box>
+                  </Flex>
+                ))}
+              </VStack>
+            </Box>
+          </Box>
+        </Collapse>
+      </Box>
+    </MotionBox>
+  );
+};
+
+const Experience = () => {
+  const textColor = useColorModeValue('gray.500', 'gray.400');
 
   return (
     <Box id="experience" py={20} bg={useColorModeValue('gray.50', 'gray.900')}>
-      <Container maxW="container.xl">
-        <VStack spacing={12} align="stretch">
-          {/* Header */}
+      <Container maxW="container.lg">
+        <VStack spacing={10} align="stretch">
           <MotionBox
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            textAlign="center"
           >
-            <Heading size="2xl" mb={4}>
+            <Heading size="xl" mb={2} fontWeight="600" letterSpacing="-0.02em">
               Experience
             </Heading>
-            <Text fontSize="xl" color={textColor}>
+            <Text fontSize="md" color={textColor}>
               My professional journey in technology
             </Text>
           </MotionBox>
 
-          {/* Vertical Timeline */}
-          <Box position="relative" maxW="800px" mx="auto" w="100%">
-            {/* Timeline Line */}
-            <Box
-              position="absolute"
-              left={{ base: "32px", md: "50%" }}
-              top="0"
-              bottom="0"
-              width="3px"
-              bg={useColorModeValue('gray.200', 'gray.700')}
-              transform={{ base: "none", md: "translateX(-50%)" }}
-            />
-
-            {/* Timeline Items */}
-            <VStack spacing={8} align="stretch">
-              {experiences.map((exp, index) => (
-                <MotionBox
-                  key={`${exp.company}-${exp.startDate}`}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  position="relative"
-                >
-                  {/* Timeline Dot */}
-                  <Box
-                    position="absolute"
-                    left={{ base: "32px", md: "50%" }}
-                    top="24px"
-                    transform={{ base: "translateX(-50%)", md: "translateX(-50%)" }}
-                    width="48px"
-                    height="48px"
-                    borderRadius="full"
-                    bg="white"
-                    border="3px solid"
-                    borderColor={timelineColor}
-                    boxShadow="0 0 0 4px rgba(66, 153, 225, 0.1)"
-                    zIndex={2}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    p={1}
-                  >
-                    <Image
-                      src={exp.logo}
-                      alt={`${exp.company} logo`}
-                      objectFit="contain"
-                      w="100%"
-                      h="100%"
-                    />
-                  </Box>
-
-                  {/* Content Card */}
-                  <Flex
-                    direction={{ base: "row", md: index % 2 === 0 ? "row-reverse" : "row" }}
-                    align="start"
-                    justify="space-between"
-                  >
-                    {/* Spacer for desktop alternating layout */}
-                    <Box 
-                      display={{ base: "none", md: "block" }}
-                      width="calc(50% - 40px)"
-                    />
-
-                    {/* Card */}
-                    <Box
-                      ml={{ base: "80px", md: "0" }}
-                      width={{ base: "calc(100% - 80px)", md: "calc(50% - 40px)" }}
-                      bg={bgColor}
-                      p={6}
-                      borderRadius="xl"
-                      boxShadow="lg"
-                      borderWidth="1px"
-                      borderColor={borderColor}
-                      transition="all 0.3s"
-                      _hover={{
-                        transform: { base: "translateX(4px)", md: index % 2 === 0 ? "translateX(-8px)" : "translateX(8px)" },
-                        boxShadow: "2xl",
-                      }}
-                    >
-                      <VStack align="start" spacing={3}>
-                        <Flex justify="space-between" w="100%" flexWrap="wrap" gap={2}>
-                          <Text 
-                            fontWeight="bold" 
-                            fontSize={{ base: "lg", md: "xl" }}
-                            color={timelineColor}
-                          >
-                            {exp.company}
-                          </Text>
-                          {exp.endDate === 'Present' && (
-                            <Badge 
-                              colorScheme="green" 
-                              fontSize="sm"
-                              px={3}
-                              py={1}
-                            >
-                              Current
-                            </Badge>
-                          )}
-                        </Flex>
-
-                        <Text 
-                          fontWeight="semibold" 
-                          fontSize={{ base: "md", md: "lg" }}
-                        >
-                          {exp.title}
-                        </Text>
-
-                        <VStack align="start" spacing={1} w="100%">
-                          <Text fontSize="sm" color={textColor}>
-                            📍 {exp.location}
-                          </Text>
-                          <Text fontSize="sm" color={textColor}>
-                            📅 {new Date(exp.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - {exp.endDate === 'Present' ? 'Present' : new Date(exp.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                          </Text>
-                          <Text fontSize="sm" color={textColor} fontWeight="medium">
-                            ⏱️ {calculateDuration(exp.startDate, exp.endDate)}
-                          </Text>
-                        </VStack>
-                      </VStack>
-                    </Box>
-                  </Flex>
-                </MotionBox>
-              ))}
-            </VStack>
-          </Box>
+          <VStack spacing={3} align="stretch" maxW="700px">
+            {companyGroups.map((group, index) => (
+              <CompanyCard
+                key={group.company}
+                group={group}
+                index={index}
+                isInitiallyOpen={index === 0}
+              />
+            ))}
+          </VStack>
         </VStack>
       </Container>
     </Box>
   );
 };
 
-export default Experience; 
+export default Experience;
